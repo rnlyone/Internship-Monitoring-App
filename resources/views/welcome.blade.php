@@ -443,8 +443,8 @@
             </div>
 
             <h1>
-                Adjust Schedules<br>
-                <em>Effortlessly.</em>
+                Welcome Aboard<br>
+                <em>Log Mieru.</em>
             </h1>
 
             <p class="hero-sub">
