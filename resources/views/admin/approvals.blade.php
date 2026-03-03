@@ -171,10 +171,10 @@ document.addEventListener('DOMContentLoaded', function () {
         tbody.innerHTML = list.map(s => {
             const start = new Date(s.start_shift);
             const end   = new Date(s.end_shift);
-            const startStr = start.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric' });
-            const timeRange = start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-                + ' – ' + end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            const submitted = new Date(s.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+            const startStr = start.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric', timeZone:'Asia/Singapore' });
+            const timeRange = start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Singapore' })
+                + ' – ' + end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Singapore' });
+            const submitted = new Date(s.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', timeZone:'Asia/Singapore' });
             const approvalBadge = {
                 pending:  '<span class="badge badge-approval-pending"><i class="ti ti-clock me-1"></i>Pending</span>',
                 approved: '<span class="badge badge-approval-approved"><i class="ti ti-check me-1"></i>Approved</span>',

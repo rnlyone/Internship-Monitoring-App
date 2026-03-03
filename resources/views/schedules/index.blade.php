@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
     calendar = new Calendar(calendarEl, {
         plugins: [timegridPlugin, listPlugin, interactionPlugin],
-        timeZone: 'local',
+        timeZone: 'Asia/Singapore',
         initialView: 'timeGridWeek',
         headerToolbar: {
             start: 'prev,next today',
@@ -382,8 +382,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const props = event.extendedProps;
         const startDate = new Date(event.start);
         const endDate   = new Date(event.end);
-        const start = startDate.toLocaleString('en-GB');
-        const end   = endDate.toLocaleString('en-GB');
+        const start = startDate.toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
+        const end   = endDate.toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
         const statusBadge = {
             'not_yet': '<span class="badge bg-label-primary">Not Yet</span>',
             'ongoing': '<span class="badge bg-label-warning">Ongoing</span>',
@@ -515,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 let html = '';
                 data.logbooks.forEach(l => {
-                    const time = new Date(l.created_at).toLocaleString('en-GB');
+                    const time = new Date(l.created_at).toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
                     html += `
                     <div class="card mb-2 bg-lighter">
                         <div class="card-body py-3">

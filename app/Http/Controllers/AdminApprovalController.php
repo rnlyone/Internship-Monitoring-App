@@ -35,13 +35,13 @@ class AdminApprovalController extends Controller
                 'id'              => $slot->id,
                 'user_name'       => $slot->user->name,
                 'user_id'         => $slot->user_id,
-                'start_shift'     => $slot->start_shift->format('Y-m-d\TH:i:s'),
-                'end_shift'       => $slot->end_shift->format('Y-m-d\TH:i:s'),
+                'start_shift'     => $slot->start_shift->format('Y-m-d\TH:i:sP'),
+                'end_shift'       => $slot->end_shift->format('Y-m-d\TH:i:sP'),
                 'caption'         => $slot->caption,
                 'duration_hours'  => $slot->duration_hours,
                 'status'          => $slot->status,
                 'approval_status' => $slot->approval_status,
-                'created_at'      => $slot->created_at->format('Y-m-d\TH:i:s'),
+                'created_at'      => $slot->created_at->format('Y-m-d\TH:i:sP'),
             ]);
 
         return response()->json(['schedules' => $schedules]);

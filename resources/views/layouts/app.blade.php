@@ -330,13 +330,11 @@
         function updateClock() {
             const el = document.getElementById('navClock');
             if (!el) return;
-            const now = new Date();
-            // Convert to UTC+8
-            const utc8 = new Date(now.getTime() + (8 * 60 * 60 * 1000) - (now.getTimezoneOffset() * 60 * 1000));
-            const h = String(utc8.getUTCHours()).padStart(2, '0');
-            const m = String(utc8.getUTCMinutes()).padStart(2, '0');
-            const s = String(utc8.getUTCSeconds()).padStart(2, '0');
-            el.textContent = h + ':' + m + ':' + s;
+            el.textContent = new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'Asia/Singapore',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
+            }).format(new Date());
         }
         updateClock();
         setInterval(updateClock, 1000);

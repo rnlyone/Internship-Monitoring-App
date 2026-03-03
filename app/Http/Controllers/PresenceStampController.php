@@ -137,8 +137,8 @@ class PresenceStampController extends Controller
                 $minutesUntilStart = $now->diffInMinutes($slot->start_shift, false);
                 return [
                     'id'                  => $slot->id,
-                    'start_shift'         => $slot->start_shift->format('Y-m-d\TH:i:s'),
-                    'end_shift'           => $slot->end_shift->format('Y-m-d\TH:i:s'),
+                    'start_shift'         => $slot->start_shift->format('Y-m-d\TH:i:sP'),
+                    'end_shift'           => $slot->end_shift->format('Y-m-d\TH:i:sP'),
                     'caption'             => $slot->caption,
                     'status'              => $slot->status,
                     'minutes_until_start' => round($minutesUntilStart),
@@ -168,12 +168,12 @@ class PresenceStampController extends Controller
 
                 return [
                     'id'              => $slot->id,
-                    'start_shift'     => $slot->start_shift->format('Y-m-d\TH:i:s'),
-                    'end_shift'       => $slot->end_shift->format('Y-m-d\TH:i:s'),
+                    'start_shift'     => $slot->start_shift->format('Y-m-d\TH:i:sP'),
+                    'end_shift'       => $slot->end_shift->format('Y-m-d\TH:i:sP'),
                     'caption'         => $slot->caption,
                     'status'          => $slot->status,
-                    'entry_time'      => $entryTime->format('Y-m-d\TH:i:s'),
-                    'earliest_exit'   => $earliestExit->format('Y-m-d\TH:i:s'),
+                    'entry_time'      => $entryTime->format('Y-m-d\TH:i:sP'),
+                    'earliest_exit'   => $earliestExit->format('Y-m-d\TH:i:sP'),
                     'can_exit'        => $now->gte($earliestExit),
                     'needs_exit'      => true,
                 ];

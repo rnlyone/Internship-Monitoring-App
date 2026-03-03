@@ -206,8 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Upcoming schedules needing entry
                 data.upcoming.forEach(s => {
                     if (!s.has_entry) {
-                        const startTime = new Date(s.start_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                        const endTime = new Date(s.end_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                        const startTime = new Date(s.start_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', timeZone:'Asia/Singapore'});
+                        const endTime = new Date(s.end_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', timeZone:'Asia/Singapore'});
                         const minText = s.minutes_until_start > 0
                             ? `Starts in ${s.minutes_until_start} minutes`
                             : `Started ${Math.abs(s.minutes_until_start)} minutes ago`;
@@ -241,9 +241,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Exit reminders
                 let exitHtml = '';
                 data.needing_exit.forEach(s => {
-                    const startTime = new Date(s.start_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                    const endTime = new Date(s.end_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                    const exitTime = new Date(s.earliest_exit).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                    const startTime = new Date(s.start_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', timeZone:'Asia/Singapore'});
+                    const endTime = new Date(s.end_shift).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', timeZone:'Asia/Singapore'});
+                    const exitTime = new Date(s.earliest_exit).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', timeZone:'Asia/Singapore'});
                     const btnClass = s.can_exit ? 'btn-success' : 'btn-secondary disabled';
 
                     exitHtml += `
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 let html = '';
                 data.logbooks.forEach(l => {
-                    const time = new Date(l.created_at).toLocaleString('en-GB');
+                    const time = new Date(l.created_at).toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
                     html += `
                     <div class="card mb-2 bg-lighter">
                         <div class="card-body py-3">
@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('dashboardCalendar');
     calendar = new Calendar(calendarEl, {
         plugins: [timegridPlugin, listPlugin, interactionPlugin],
-        timeZone: 'local',
+        timeZone: 'Asia/Singapore',
         initialView: 'timeGridWeek',
         headerToolbar: {
             start: 'prev,next today',
@@ -449,8 +449,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const props = event.extendedProps;
         const startDate = new Date(event.start);
         const endDate   = new Date(event.end);
-        const start = startDate.toLocaleString('en-GB');
-        const end   = endDate.toLocaleString('en-GB');
+        const start = startDate.toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
+        const end   = endDate.toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
         const statusBadge = {
             'not_yet': '<span class="badge bg-label-primary">Not Yet</span>',
             'ongoing': '<span class="badge bg-label-warning">Ongoing</span>',
