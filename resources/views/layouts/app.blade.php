@@ -179,6 +179,38 @@
                             </li>
                             <!-- / Live Clock -->
 
+                            <!-- Notifications -->
+                            <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-1">
+                                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill position-relative dropdown-toggle hide-arrow"
+                                   href="javascript:void(0);"
+                                   data-bs-toggle="dropdown"
+                                   data-bs-auto-close="outside"
+                                   aria-expanded="false"
+                                   id="notifDropdownToggle">
+                                    <i class="ti ti-bell ti-md"></i>
+                                    <span id="notifBadge"
+                                          class="badge bg-danger rounded-pill position-absolute"
+                                          style="font-size:.58rem;padding:1px 4px;min-width:16px;top:4px;right:4px;display:none">0</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end p-0 shadow" style="min-width:340px;max-width:380px">
+                                    <li class="d-flex align-items-center justify-content-between px-4 py-3 border-bottom">
+                                        <h6 class="mb-0 fw-semibold">Notifications</h6>
+                                        <button type="button" class="btn btn-sm btn-text-secondary p-0" id="markAllReadBtn" style="font-size:.75rem">
+                                            <i class="ti ti-checks ti-sm me-1"></i>Mark all read
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <div id="notifList" style="max-height:340px;overflow-y:auto">
+                                            <div class="text-center py-5 text-muted" id="notifEmpty">
+                                                <i class="ti ti-bell-off ti-24px d-block mb-1"></i>
+                                                <small>No notifications</small>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- / Notifications -->
+
                             <!-- Style Switcher -->
                             <li class="nav-item dropdown-style-switcher dropdown">
                                 <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -338,6 +370,97 @@
         }
         updateClock();
         setInterval(updateClock, 1000);
+    })();
+    </script>
+
+    <!-- Notifications JS -->
+    <script>
+    (function () {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        const typeMap = {
+            schedule_submitted : { icon: 'ti-calendar-plus',  color: 'warning'   },
+            schedule_approved  : { icon: 'ti-circle-check',   color: 'success'   },
+            schedule_rejected  : { icon: 'ti-circle-x',       color: 'danger'    },
+            kanban_assigned    : { icon: 'ti-clipboard-check', color: 'info'     },
+            kanban_done        : { icon: 'ti-checklist',       color: 'success'  },
+        };
+
+        function esc(str) {
+            return String(str)
+                .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function loadNotifications() {
+            fetch('/notifications', { headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                    if (!data) return;
+
+                    const badge  = document.getElementById('notifBadge');
+                    const list   = document.getElementById('notifList');
+
+                    // Update badge
+                    if (data.unread > 0) {
+                        badge.textContent  = data.unread > 9 ? '9+' : data.unread;
+                        badge.style.display = '';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+
+                    // Render list
+                    if (!data.notifications || data.notifications.length === 0) {
+                        list.innerHTML = `<div class="text-center py-5 text-muted"><i class="ti ti-bell-off ti-24px d-block mb-1"></i><small>No notifications</small></div>`;
+                        return;
+                    }
+
+                    list.innerHTML = data.notifications.map(n => {
+                        const meta = typeMap[n.type] ?? { icon: 'ti-bell', color: 'secondary' };
+                        const url  = (n.url && n.url !== '') ? esc(n.url) : '#';
+                        return `<a href="${url}"
+                                   class="dropdown-item d-flex align-items-start gap-3 py-3 px-4 border-bottom ${n.read ? '' : 'bg-lighter'}"
+                                   onclick="notifMarkRead(event, ${n.id}, '${url}')">
+                            <div class="avatar avatar-sm flex-shrink-0">
+                                <span class="avatar-initial rounded-circle bg-label-${meta.color}">
+                                    <i class="ti ${meta.icon} ti-sm"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <div class="fw-semibold" style="font-size:.82rem">${esc(n.title)}</div>
+                                <div class="text-muted text-truncate" style="font-size:.75rem">${esc(n.message)}</div>
+                                <div class="text-muted" style="font-size:.68rem">${esc(n.created_at)}</div>
+                            </div>
+                            ${!n.read ? '<span class="badge bg-primary rounded-pill flex-shrink-0 mt-1" style="width:8px;height:8px;padding:0"></span>' : ''}
+                        </a>`;
+                    }).join('');
+                })
+                .catch(() => {});
+        }
+
+        window.notifMarkRead = function (e, id, url) {
+            e.preventDefault();
+            fetch(`/notifications/${id}/read`, {
+                method : 'POST',
+                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+            }).finally(() => {
+                loadNotifications();
+                if (url && url !== '#') window.location.href = url;
+            });
+        };
+
+        document.getElementById('markAllReadBtn')?.addEventListener('click', function () {
+            fetch('/notifications/read-all', {
+                method : 'POST',
+                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+            }).then(() => loadNotifications());
+        });
+
+        document.getElementById('notifDropdownToggle')?.addEventListener('show.bs.dropdown', loadNotifications);
+
+        // Initial load + poll every 30 s
+        loadNotifications();
+        setInterval(loadNotifications, 30000);
     })();
     </script>
 </body>

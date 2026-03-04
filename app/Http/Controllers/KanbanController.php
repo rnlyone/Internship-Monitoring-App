@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KanbanCard;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -73,6 +74,17 @@ class KanbanController extends Controller
 
         $card->load(['assignedUser:id,name', 'creator:id,name']);
 
+        // Notify new assignee (skip if admin assigned themselves)
+        if (!empty($card->assigned_to) && $card->assigned_to !== Auth::id()) {
+            Notification::notify($card->assigned_to, 'kanban_assigned', [
+                'title'        => 'Task Assigned to You',
+                'message'      => 'You have been assigned: "' . $card->title . '".',
+                'url'          => route('kanban.index'),
+                'related_type' => 'kanban_card',
+                'related_id'   => $card->id,
+            ]);
+        }
+
         return response()->json([
             'message' => 'Card created.',
             'card'    => $this->formatCard($card, true),
@@ -98,8 +110,42 @@ class KanbanController extends Controller
             'assigned_to' => ['nullable', 'exists:users,id'],
         ]);
 
+        $oldAssignedTo = $card->assigned_to;
+        $oldColumn     = $card->column_name;
+
         $card->update($data);
         $card->load(['assignedUser:id,name', 'creator:id,name']);
+
+        // Notify new assignee when assignment changes
+        $newAssignedTo = $card->assigned_to;
+        if ($newAssignedTo && $newAssignedTo !== $oldAssignedTo && $newAssignedTo !== Auth::id()) {
+            Notification::notify($newAssignedTo, 'kanban_assigned', [
+                'title'        => 'Task Assigned to You',
+                'message'      => 'You have been assigned: "' . $card->title . '".',
+                'url'          => route('kanban.index'),
+                'related_type' => 'kanban_card',
+                'related_id'   => $card->id,
+            ]);
+        }
+
+        // Notify admins when card lands on "done"
+        if ($card->column_name === 'done' && $oldColumn !== 'done') {
+            Notification::notifyAdmins('kanban_done', [
+                'title'        => 'Task Moved to Done',
+                'message'      => ($card->assignedUser?->name ?? Auth::user()->name) . ' moved "' . $card->title . '" to Done.',
+                'url'          => route('kanban.index'),
+                'related_type' => 'kanban_card',
+                'related_id'   => $card->id,
+            ]);
+        }
+
+        // Remove kanban_done notification when card is pulled back from "done"
+        if ($oldColumn === 'done' && $card->column_name !== 'done') {
+            Notification::where('type', 'kanban_done')
+                ->where('related_type', 'kanban_card')
+                ->where('related_id', $card->id)
+                ->delete();
+        }
 
         return response()->json([
             'message' => 'Card updated.',
@@ -133,15 +179,44 @@ class KanbanController extends Controller
             'columns.*.*' => ['integer'],
         ]);
 
+        // Preload all affected cards so we can compare old vs new column
+        $allIds = collect($data['columns'])->flatten()->filter()->values()->all();
+        $cards  = KanbanCard::with('assignedUser:id,name')
+            ->whereIn('id', $allIds)
+            ->get()
+            ->keyBy('id');
+
         foreach ($data['columns'] as $column => $cardIds) {
             if (! in_array($column, self::COLUMNS)) {
                 continue;
             }
             foreach ($cardIds as $position => $id) {
-                KanbanCard::where('id', $id)->update([
-                    'column_name' => $column,
-                    'position'    => $position,
-                ]);
+                $card = $cards->get($id);
+                if (! $card) {
+                    continue;
+                }
+
+                $oldColumn = $card->column_name;
+                $card->update(['column_name' => $column, 'position' => $position]);
+
+                // Moved to done → notify admins
+                if ($column === 'done' && $oldColumn !== 'done') {
+                    Notification::notifyAdmins('kanban_done', [
+                        'title'        => 'Task Moved to Done',
+                        'message'      => ($card->assignedUser?->name ?? Auth::user()->name) . ' moved "' . $card->title . '" to Done.',
+                        'url'          => route('kanban.index'),
+                        'related_type' => 'kanban_card',
+                        'related_id'   => $card->id,
+                    ]);
+                }
+
+                // Moved away from done → delete existing kanban_done notifications
+                if ($oldColumn === 'done' && $column !== 'done') {
+                    Notification::where('type', 'kanban_done')
+                        ->where('related_type', 'kanban_card')
+                        ->where('related_id', $card->id)
+                        ->delete();
+                }
             }
         }
 

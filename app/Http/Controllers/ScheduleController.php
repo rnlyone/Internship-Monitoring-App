@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\ScheduleSlot;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -171,6 +172,17 @@ class ScheduleController extends Controller
         ]);
 
         $slot->load('user:id,name');
+
+        // Notify all admins when an intern submits for approval
+        if ($user->isIntern()) {
+            Notification::notifyAdmins('schedule_submitted', [
+                'title'        => 'New Schedule Submitted',
+                'message'      => $user->name . ' submitted a schedule for ' . $start->format('D, d M Y') . '.',
+                'url'          => route('admin.approvals.index'),
+                'related_type' => 'schedule',
+                'related_id'   => $slot->id,
+            ]);
+        }
 
         $message = $user->isAdmin()
             ? 'Schedule created successfully.'

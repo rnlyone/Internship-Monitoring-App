@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\ScheduleSlot;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,6 +55,14 @@ class AdminApprovalController extends Controller
     {
         $schedule->update(['approval_status' => 'approved']);
 
+        Notification::notify($schedule->user_id, 'schedule_approved', [
+            'title'        => 'Schedule Approved',
+            'message'      => 'Your schedule on ' . $schedule->start_shift->format('D, d M Y') . ' has been approved.',
+            'url'          => route('schedules.index'),
+            'related_type' => 'schedule',
+            'related_id'   => $schedule->id,
+        ]);
+
         return response()->json(['message' => 'Schedule approved successfully.']);
     }
 
@@ -63,6 +72,14 @@ class AdminApprovalController extends Controller
     public function reject(ScheduleSlot $schedule): JsonResponse
     {
         $schedule->update(['approval_status' => 'rejected']);
+
+        Notification::notify($schedule->user_id, 'schedule_rejected', [
+            'title'        => 'Schedule Rejected',
+            'message'      => 'Your schedule on ' . $schedule->start_shift->format('D, d M Y') . ' was rejected.',
+            'url'          => route('schedules.index'),
+            'related_type' => 'schedule',
+            'related_id'   => $schedule->id,
+        ]);
 
         return response()->json(['message' => 'Schedule rejected.']);
     }
@@ -74,10 +91,22 @@ class AdminApprovalController extends Controller
     {
         $request->validate(['ids' => 'required|array', 'ids.*' => 'string']);
 
-        $count = ScheduleSlot::whereIn('id', $request->ids)
+        $slots = ScheduleSlot::whereIn('id', $request->ids)
             ->where('approval_status', 'pending')
-            ->update(['approval_status' => 'approved']);
+            ->get();
 
+        foreach ($slots as $slot) {
+            $slot->update(['approval_status' => 'approved']);
+            Notification::notify($slot->user_id, 'schedule_approved', [
+                'title'        => 'Schedule Approved',
+                'message'      => 'Your schedule on ' . $slot->start_shift->format('D, d M Y') . ' has been approved.',
+                'url'          => route('schedules.index'),
+                'related_type' => 'schedule',
+                'related_id'   => $slot->id,
+            ]);
+        }
+
+        $count = $slots->count();
         return response()->json(['message' => "{$count} schedule(s) approved successfully."]);
     }
 
@@ -88,10 +117,22 @@ class AdminApprovalController extends Controller
     {
         $request->validate(['ids' => 'required|array', 'ids.*' => 'string']);
 
-        $count = ScheduleSlot::whereIn('id', $request->ids)
+        $slots = ScheduleSlot::whereIn('id', $request->ids)
             ->where('approval_status', 'pending')
-            ->update(['approval_status' => 'rejected']);
+            ->get();
 
+        foreach ($slots as $slot) {
+            $slot->update(['approval_status' => 'rejected']);
+            Notification::notify($slot->user_id, 'schedule_rejected', [
+                'title'        => 'Schedule Rejected',
+                'message'      => 'Your schedule on ' . $slot->start_shift->format('D, d M Y') . ' was rejected.',
+                'url'          => route('schedules.index'),
+                'related_type' => 'schedule',
+                'related_id'   => $slot->id,
+            ]);
+        }
+
+        $count = $slots->count();
         return response()->json(['message' => "{$count} schedule(s) rejected."]);
     }
 
