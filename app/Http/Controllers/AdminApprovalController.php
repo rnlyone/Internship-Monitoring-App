@@ -94,4 +94,14 @@ class AdminApprovalController extends Controller
 
         return response()->json(['message' => "{$count} schedule(s) rejected."]);
     }
+
+    /**
+     * Permanently delete a schedule (admin only).
+     */
+    public function destroy(ScheduleSlot $schedule): JsonResponse
+    {
+        $schedule->delete();
+
+        return response()->json(['message' => 'Schedule deleted successfully.']);
+    }
 }

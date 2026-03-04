@@ -69,6 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admin/approvals/bulk-reject', [AdminApprovalController::class, 'bulkReject'])->name('admin.approvals.bulk-reject');
         Route::post('/admin/approvals/{schedule}/approve', [AdminApprovalController::class, 'approve'])->name('admin.approvals.approve');
         Route::post('/admin/approvals/{schedule}/reject', [AdminApprovalController::class, 'reject'])->name('admin.approvals.reject');
+        Route::delete('/admin/approvals/{schedule}', [AdminApprovalController::class, 'destroy'])->name('admin.approvals.destroy');
 
         // Logbook review
         Route::get('/admin/logbooks', [AdminLogbookController::class, 'index'])->name('admin.logbooks.index');

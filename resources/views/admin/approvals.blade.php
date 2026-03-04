@@ -149,9 +149,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderTable(list) {
         const tbody = document.getElementById('approvalTableBody');
-        const isPending = currentStatus === 'pending';
+        const isPending  = currentStatus === 'pending';
+        const isApproved = currentStatus === 'approved';
         const actionsHeader = document.getElementById('actionsHeader');
-        actionsHeader.style.display = isPending ? '' : 'none';
+        actionsHeader.style.display = '';
 
         if (list.length === 0) {
             tbody.innerHTML = `
@@ -189,7 +190,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button class="btn btn-sm btn-icon btn-secondary reject-btn" data-id="${s.id}" title="Reject">
                         <i class="ti ti-x ti-sm"></i>
                     </button>
-                </div>` : '<span class="text-muted">—</span>';
+                </div>`
+            : isApproved ? `
+                <div class="d-flex gap-1 justify-content-center">
+                    <button class="btn btn-sm btn-icon btn-warning reject-btn" data-id="${s.id}" title="Revoke approval">
+                        <i class="ti ti-arrow-back-up ti-sm"></i>
+                    </button>
+                    <button class="btn btn-sm btn-icon btn-danger delete-btn" data-id="${s.id}" title="Delete schedule">
+                        <i class="ti ti-trash ti-sm"></i>
+                    </button>
+                </div>`
+            : '<span class="text-muted">—</span>';
 
             return `
             <tr class="approval-row" data-id="${s.id}">
@@ -221,6 +232,8 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.addEventListener('click', () => handleAction(btn.dataset.id, 'approve')));
         document.querySelectorAll('.reject-btn').forEach(btn =>
             btn.addEventListener('click', () => handleAction(btn.dataset.id, 'reject')));
+        document.querySelectorAll('.delete-btn').forEach(btn =>
+            btn.addEventListener('click', () => handleDelete(btn.dataset.id)));
 
         // Bind row checkboxes
         document.querySelectorAll('.row-check').forEach(cb => {
@@ -249,6 +262,28 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(r => r.json().then(d => ({ ok: r.ok, data: d })))
         .then(({ ok, data }) => {
             showToast(data.message, ok ? (action === 'approve' ? 'success' : 'secondary') : 'danger');
+            if (ok) {
+                if (row) row.remove();
+                refreshStats();
+            } else {
+                if (row) row.classList.remove('processing');
+            }
+        });
+    }
+
+    // --- Delete ---
+    function handleDelete(id) {
+        if (!confirm('Permanently delete this schedule? This cannot be undone.')) return;
+        const row = document.querySelector(`tr[data-id="${id}"]`);
+        if (row) row.classList.add('processing');
+
+        fetch(`/admin/approvals/${id}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+        })
+        .then(r => r.json().then(d => ({ ok: r.ok, data: d })))
+        .then(({ ok, data }) => {
+            showToast(data.message, ok ? 'success' : 'danger');
             if (ok) {
                 if (row) row.remove();
                 refreshStats();
