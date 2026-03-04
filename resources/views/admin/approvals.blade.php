@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const tbody = document.getElementById('approvalTableBody');
         const isPending  = currentStatus === 'pending';
         const isApproved = currentStatus === 'approved';
+        const isRejected = currentStatus === 'rejected';
         const actionsHeader = document.getElementById('actionsHeader');
         actionsHeader.style.display = '';
 
@@ -195,6 +196,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="d-flex gap-1 justify-content-center">
                     <button class="btn btn-sm btn-icon btn-warning reject-btn" data-id="${s.id}" title="Revoke approval">
                         <i class="ti ti-arrow-back-up ti-sm"></i>
+                    </button>
+                    <button class="btn btn-sm btn-icon btn-danger delete-btn" data-id="${s.id}" title="Delete schedule">
+                        <i class="ti ti-trash ti-sm"></i>
+                    </button>
+                </div>`
+            : isRejected ? `
+                <div class="d-flex gap-1 justify-content-center">
+                    <button class="btn btn-sm btn-icon btn-success approve-btn" data-id="${s.id}" title="Re-approve">
+                        <i class="ti ti-check ti-sm"></i>
                     </button>
                     <button class="btn btn-sm btn-icon btn-danger delete-btn" data-id="${s.id}" title="Delete schedule">
                         <i class="ti ti-trash ti-sm"></i>
