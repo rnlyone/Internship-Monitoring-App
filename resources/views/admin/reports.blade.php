@@ -196,12 +196,6 @@
                 </div>
             </div>
             <div class="col-6 col-sm-4 col-xl-2">
-                <div class="kpi-card bg-label-secondary">
-                    <div class="kpi-val text-secondary" id="stRejected">—</div>
-                    <div class="kpi-lbl">Rejected</div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-4 col-xl-2">
                 <div class="kpi-card bg-label-primary">
                     <div class="kpi-val text-primary" id="stRate">—</div>
                     <div class="kpi-lbl">Attendance %</div>
@@ -281,7 +275,6 @@
                             <th style="width:80px">Hours</th>
                             <th>Caption</th>
                             <th style="width:90px">Status</th>
-                            <th style="width:90px">Approval</th>
                             <th style="width:100px">Entry</th>
                             <th style="width:100px">Exit</th>
                             <th style="width:80px">Late</th>
@@ -373,7 +366,6 @@
         document.getElementById('stLogs').textContent     = s.logbook_entries;
         document.getElementById('stApproved').textContent = s.approved;
         document.getElementById('stPending').textContent  = s.pending;
-        document.getElementById('stRejected').textContent = s.rejected;
         document.getElementById('stRate').textContent     = s.attendance_rate + '%';
         document.getElementById('stOngoing').textContent  = s.ongoing;
         document.getElementById('stNotYet').textContent   = s.not_yet;
@@ -445,7 +437,7 @@
         // ── Approval bar ──────────────────────────────────
         const apvBar = document.getElementById('approvalBar');
         const apvLegend = document.getElementById('approvalBarLegend');
-        const apvTotal = s.approved + s.pending + s.rejected;
+        const apvTotal = s.approved + s.pending;
         apvBar.innerHTML = '';
         apvLegend.innerHTML = '';
 
@@ -453,7 +445,6 @@
             const apvItems = [
                 { label:'Approved', val:s.approved, color:'#28c76f' },
                 { label:'Pending',  val:s.pending,  color:'#ff9f43' },
-                { label:'Rejected', val:s.rejected, color:'#a1acb8' },
             ];
             apvItems.forEach(item => {
                 if (item.val > 0) {
@@ -500,7 +491,6 @@
                 <td class="small">${s.duration_hours}h</td>
                 <td class="small">${escHtml(s.caption)}</td>
                 <td>${badge(sCls, statusLbl[s.status] ?? s.status)}</td>
-                <td>${badge(asCls, s.approval_status)}</td>
                 <td class="small">${s.entry_time ? escHtml(s.entry_time) : '<span class="text-muted">—</span>'}</td>
                 <td class="small">${s.exit_time  ? escHtml(s.exit_time)  : '<span class="text-muted">—</span>'}</td>
                 <td class="small">${s.late_minutes != null ? s.late_minutes + ' min' : '<span class="text-muted">—</span>'}</td>
@@ -525,7 +515,7 @@
                 expandTr.className = 'logbook-collapse';
                 expandTr.style.display = _expandedRows.has(idx) ? '' : 'none';
                 expandTr.innerHTML = `
-                    <td colspan="11" class="px-4 py-3">
+                    <td colspan="10" class="px-4 py-3">
                         <div class="small fw-semibold text-muted mb-2">
                             <i class="ti ti-notebook me-1"></i>Logbook Entries (${s.logbook_count})
                         </div>
