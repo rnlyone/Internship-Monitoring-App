@@ -135,6 +135,13 @@
                         </a>
                     </li>
 
+                    <li class="menu-item {{ request()->routeIs('admin.performance.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.performance.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-chart-bar"></i>
+                            <div data-i18n="Performance Monitor">Performance Monitor</div>
+                        </a>
+                    </li>
+
                     <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                         <a href="{{ route('admin.users.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-users"></i>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminPerformanceController;
 use App\Http\Controllers\AdminScheduleAssignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminApprovalController;
@@ -100,6 +101,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/schedule-assign', [AdminScheduleAssignController::class, 'index'])->name('admin.schedule-assign.index');
         Route::post('/admin/schedule-assign', [AdminScheduleAssignController::class, 'store'])->name('admin.schedule-assign.store');
         Route::delete('/admin/schedule-assign/{schedule}', [AdminScheduleAssignController::class, 'destroy'])->name('admin.schedule-assign.destroy');
+
+        // Performance monitoring
+        Route::get('/admin/performance', [AdminPerformanceController::class, 'index'])->name('admin.performance.index');
+        Route::get('/admin/performance/data', [AdminPerformanceController::class, 'data'])->name('admin.performance.data');
     });
 });
 
