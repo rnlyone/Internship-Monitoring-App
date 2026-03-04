@@ -81,7 +81,7 @@ class KanbanController extends Controller
                 'message'      => 'You have been assigned: "' . $card->title . '".',
                 'url'          => route('kanban.index'),
                 'related_type' => 'kanban_card',
-                'related_id'   => $card->id,
+                'related_id'   => (string) $card->id,
             ]);
         }
 
@@ -124,7 +124,7 @@ class KanbanController extends Controller
                 'message'      => 'You have been assigned: "' . $card->title . '".',
                 'url'          => route('kanban.index'),
                 'related_type' => 'kanban_card',
-                'related_id'   => $card->id,
+                'related_id'   => (string) $card->id,
             ]);
         }
 
@@ -135,7 +135,7 @@ class KanbanController extends Controller
                 'message'      => ($card->assignedUser?->name ?? Auth::user()->name) . ' moved "' . $card->title . '" to Done.',
                 'url'          => route('kanban.index'),
                 'related_type' => 'kanban_card',
-                'related_id'   => $card->id,
+                'related_id'   => (string) $card->id,
             ]);
         }
 
@@ -206,7 +206,7 @@ class KanbanController extends Controller
                         'message'      => ($card->assignedUser?->name ?? Auth::user()->name) . ' moved "' . $card->title . '" to Done.',
                         'url'          => route('kanban.index'),
                         'related_type' => 'kanban_card',
-                        'related_id'   => $card->id,
+                        'related_id'   => (string) $card->id,
                     ]);
                 }
 

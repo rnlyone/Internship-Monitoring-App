@@ -76,14 +76,18 @@ class AdminScheduleAssignController extends Controller
                 'assigned_by'     => $adminId,
             ]);
 
-            // Notify intern
-            Notification::notify($internId, 'schedule_assigned', [
-                'title'        => 'New Schedule Assigned',
-                'message'      => 'A schedule was assigned to you for ' . $start->format('D, d M Y') . ($request->caption ? ' — ' . $request->caption : '') . '.',
-                'url'          => route('schedules.index'),
-                'related_type' => 'schedule',
-                'related_id'   => $slot->id,
-            ]);
+            // Notify intern (non-fatal — slot is already saved)
+            try {
+                Notification::notify((int) $internId, 'schedule_assigned', [
+                    'title'        => 'New Schedule Assigned',
+                    'message'      => 'A schedule was assigned to you for ' . $start->format('D, d M Y') . ($request->caption ? ' — ' . $request->caption : '') . '.',
+                    'url'          => route('schedules.index'),
+                    'related_type' => 'schedule',
+                    'related_id'   => (string) $slot->id,
+                ]);
+            } catch (\Exception $e) {
+                \Log::warning('schedule_assigned notification failed for user ' . $internId . ': ' . $e->getMessage());
+            }
 
             $created++;
         }

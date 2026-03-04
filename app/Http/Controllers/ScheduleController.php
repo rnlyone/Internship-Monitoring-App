@@ -206,7 +206,7 @@ class ScheduleController extends Controller
                 'message'      => $user->name . ' submitted a schedule for ' . $start->format('D, d M Y') . '.',
                 'url'          => route('admin.approvals.index'),
                 'related_type' => 'schedule',
-                'related_id'   => $slot->id,
+                'related_id'   => (string) $slot->id,
             ]);
         }
 

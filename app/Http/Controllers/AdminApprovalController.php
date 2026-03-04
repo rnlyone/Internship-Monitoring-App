@@ -60,7 +60,7 @@ class AdminApprovalController extends Controller
             'message'      => 'Your schedule on ' . $schedule->start_shift->format('D, d M Y') . ' has been approved.',
             'url'          => route('schedules.index'),
             'related_type' => 'schedule',
-            'related_id'   => $schedule->id,
+            'related_id'   => (string) $schedule->id,
         ]);
 
         return response()->json(['message' => 'Schedule approved successfully.']);
@@ -78,7 +78,7 @@ class AdminApprovalController extends Controller
             'message'      => 'Your schedule on ' . $schedule->start_shift->format('D, d M Y') . ' was rejected.',
             'url'          => route('schedules.index'),
             'related_type' => 'schedule',
-            'related_id'   => $schedule->id,
+            'related_id'   => (string) $schedule->id,
         ]);
 
         return response()->json(['message' => 'Schedule rejected.']);
@@ -102,7 +102,7 @@ class AdminApprovalController extends Controller
                 'message'      => 'Your schedule on ' . $slot->start_shift->format('D, d M Y') . ' has been approved.',
                 'url'          => route('schedules.index'),
                 'related_type' => 'schedule',
-                'related_id'   => $slot->id,
+                'related_id'   => (string) $slot->id,
             ]);
         }
 
@@ -128,7 +128,7 @@ class AdminApprovalController extends Controller
                 'message'      => 'Your schedule on ' . $slot->start_shift->format('D, d M Y') . ' was rejected.',
                 'url'          => route('schedules.index'),
                 'related_type' => 'schedule',
-                'related_id'   => $slot->id,
+                'related_id'   => (string) $slot->id,
             ]);
         }
 
