@@ -35,8 +35,8 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}" class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
     <!-- Vendors CSS -->
@@ -49,6 +49,8 @@
 
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
+    <script src="{{ asset('assets/vendor/js/template-customizer.js') }}"></script>
+    <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
 
 <body>
@@ -235,6 +237,8 @@
                                 </ul>
                             </li>
                             <!-- / Notifications -->
+
+
 
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
