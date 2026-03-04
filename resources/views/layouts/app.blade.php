@@ -11,6 +11,19 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
 
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#7367f0" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="{{ config('app.name', 'Log Mieru') }}" />
+    <meta name="description" content="Internship monitoring and logbook management system" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+    <meta name="msapplication-TileColor" content="#7367f0" />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -477,6 +490,31 @@
         loadNotifications();
         setInterval(loadNotifications, 30000);
     })();
+    </script>
+
+    <!-- PWA Service Worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(reg => {
+                    // Check for updates every 60 s
+                    setInterval(() => reg.update(), 60000);
+                })
+                .catch(err => console.warn('SW registration failed:', err));
+        });
+
+        // Prompt user when a new SW version is waiting
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (window._swUpdating) return;
+            window._swUpdating = true;
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#7367f0;color:#fff;padding:.75rem 1.5rem;border-radius:.5rem;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.25);font-family:sans-serif;cursor:pointer;';
+            toast.innerHTML = '🔄 App updated — <strong>tap to reload</strong>';
+            toast.onclick = () => window.location.reload();
+            document.body.appendChild(toast);
+        });
+    }
     </script>
 </body>
 
