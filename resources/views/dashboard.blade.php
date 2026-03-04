@@ -13,6 +13,12 @@
 @endpush
 
 <div class="row g-6">
+    <!-- Active Shift Needing Exit (dynamically populated) -->
+    <div class="col-12" id="exitReminders"></div>
+
+    <!-- Presence Reminder Cards (dynamically populated) -->
+    <div class="col-12" id="presenceReminders"></div>
+
     <!-- Welcome Card -->
     <div class="col-xl-4">
         <div class="card">
@@ -108,12 +114,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Presence Reminder Cards (dynamically populated) -->
-    <div class="col-12" id="presenceReminders"></div>
-
-    <!-- Active Shift Needing Exit (dynamically populated) -->
-    <div class="col-12" id="exitReminders"></div>
 
     <!-- Upcoming Shifts Reminder -->
     <div class="col-12" id="upcomingShiftsSection"></div>
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const urgency = s.minutes_until_start <= 0 ? 'danger' : (s.minutes_until_start <= 15 ? 'warning' : 'primary');
 
                         html += `
-                        <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="col-12 mb-4">
                             <div class="card border-${urgency} presence-card">
                                 <div class="card-body text-center">
                                     <div class="mb-3">
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const btnClass = s.can_exit ? 'btn-success' : 'btn-secondary disabled';
 
                     exitHtml += `
-                    <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="col-12 mb-4">
                         <div class="card border-info">
                             <div class="card-body">
                                 <div class="d-flex align-items-center mb-3">
