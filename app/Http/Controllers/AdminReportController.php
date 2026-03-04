@@ -22,7 +22,10 @@ class AdminReportController extends Controller
             ->orderBy('name')
             ->get(['id', 'name', 'email'])
             ->map(function ($intern) {
-                $slots = ScheduleSlot::with('shiftLogbooks')->where('user_id', $intern->id)->get();
+                $slots = ScheduleSlot::with('shiftLogbooks')
+                    ->where('user_id', $intern->id)
+                    ->where('approval_status', '!=', 'rejected')
+                    ->get();
 
                 $firstSlot = $slots->sortBy('start_shift')->first();
                 $lastSlot  = $slots->sortByDesc('start_shift')->first();
@@ -60,6 +63,7 @@ class AdminReportController extends Controller
 
         $query = ScheduleSlot::with(['entryStamp', 'exitStamp', 'shiftLogbooks'])
             ->where('user_id', $intern->id)
+            ->where('approval_status', '!=', 'rejected')
             ->orderBy('start_shift');
 
         if ($request->filled('date_from')) {
@@ -153,6 +157,7 @@ class AdminReportController extends Controller
         // ── Schedule slots ────────────────────────────────
         $query = ScheduleSlot::with(['entryStamp', 'exitStamp', 'shiftLogbooks'])
             ->where('user_id', $intern->id)
+            ->where('approval_status', '!=', 'rejected')
             ->orderBy('start_shift');
 
         if ($request->filled('date_from')) {

@@ -85,6 +85,8 @@ class ScheduleController extends Controller
                     'duration_hours'  => $slot->duration_hours,
                     'has_entry'       => $slot->entryStamp !== null,
                     'has_exit'        => $slot->exitStamp !== null,
+                    'start_iso'       => $slot->start_shift->format('Y-m-d\TH:i:sP'),
+                    'end_iso'         => $slot->end_shift->format('Y-m-d\TH:i:sP'),
                 ],
             ];
         });

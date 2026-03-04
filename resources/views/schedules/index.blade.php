@@ -380,8 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showEventDetail(event) {
         const props = event.extendedProps;
-        const startDate = new Date(event.start);
-        const endDate   = new Date(event.end);
+        // Use raw ISO strings from extendedProps — event.start/end are FullCalendar fake-local
+        // dates that break toLocaleString on browsers not in Asia/Singapore.
+        const startDate = new Date(props.start_iso);
+        const endDate   = new Date(props.end_iso);
         const start = startDate.toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
         const end   = endDate.toLocaleString('en-GB', { timeZone: 'Asia/Singapore' });
         const statusBadge = {
