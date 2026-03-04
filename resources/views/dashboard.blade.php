@@ -9,16 +9,17 @@
     50% { box-shadow: 0 0 20px rgba(115,103,240,.6); }
 }
 .fc .fc-timegrid-slot { height: 3em; }
+#exitReminders:not(:empty), #presenceReminders:not(:empty) { margin-bottom: 1.5rem; }
 </style>
 @endpush
 
+<!-- Active Shift Needing Exit (dynamically populated) -->
+<div id="exitReminders"></div>
+
+<!-- Presence Reminder Cards (dynamically populated) -->
+<div id="presenceReminders"></div>
+
 <div class="row g-6">
-    <!-- Active Shift Needing Exit (dynamically populated) -->
-    <div class="col-12" id="exitReminders"></div>
-
-    <!-- Presence Reminder Cards (dynamically populated) -->
-    <div class="col-12" id="presenceReminders"></div>
-
     <!-- Welcome Card -->
     <div class="col-xl-4">
         <div class="card">
