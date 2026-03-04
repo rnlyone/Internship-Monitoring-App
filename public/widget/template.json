@@ -1,0 +1,132 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.5",
+    "body": [
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "/icons/icon-96x96.png",
+                            "size": "Small",
+                            "style": "Person"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "${user}",
+                            "weight": "Bolder",
+                            "size": "Medium",
+                            "wrap": true
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "${date} • ${now}",
+                            "size": "Small",
+                            "isSubtle": true
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                }
+            ]
+        },
+        {
+            "type": "Container",
+            "$data": "${shifts}",
+            "separator": true,
+            "spacing": "Small",
+            "items": [
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "auto",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${day_label}",
+                                    "weight": "Bolder",
+                                    "size": "Small",
+                                    "color": "${if(day_label == 'Today', 'Attention', if(day_label == 'Tomorrow', 'Warning', 'Default'))}"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${time_start} – ${time_end}",
+                                    "weight": "Bolder",
+                                    "size": "Default"
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${caption}",
+                                    "size": "Small",
+                                    "isSubtle": true,
+                                    "wrap": true,
+                                    "maxLines": 1
+                                }
+                            ]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "auto",
+                            "verticalContentAlignment": "Center",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${status_label}",
+                                    "size": "Small",
+                                    "weight": "Bolder",
+                                    "color": "${if(is_ongoing, 'Good', if(is_done, 'Default', if(can_entry, 'Accent', 'Default')))}"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "ColumnSet",
+                    "spacing": "None",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "${if(has_entry, '✓ In ' + entry_time, '')} ${if(has_exit, '• Out ' + exit_time, '')} • 📝 ${logbook_count}",
+                                    "size": "Small",
+                                    "isSubtle": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ActionSet",
+            "actions": [
+                {
+                    "type": "Action.OpenUrl",
+                    "title": "Open Widget",
+                    "url": "/widget"
+                }
+            ]
+        }
+    ]
+}

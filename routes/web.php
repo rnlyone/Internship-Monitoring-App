@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ShiftLogbookController;
+use App\Http\Controllers\WidgetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -64,6 +65,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/kanban/cards/{card}', [KanbanController::class, 'show'])->name('kanban.show');
     Route::put('/kanban/cards/{card}', [KanbanController::class, 'update'])->name('kanban.update');
     Route::delete('/kanban/cards/{card}', [KanbanController::class, 'destroy'])->name('kanban.destroy');
+
+    // Widget (compact PWA page)
+    Route::get('/widget', [WidgetController::class, 'index'])->name('widget.index');
+    Route::get('/widget/data', [WidgetController::class, 'data'])->name('widget.data');
 
     // Admin-only: Settings + Approvals
     Route::middleware('admin')->group(function () {
