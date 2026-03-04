@@ -115,6 +115,9 @@
     <!-- Active Shift Needing Exit (dynamically populated) -->
     <div class="col-12" id="exitReminders"></div>
 
+    <!-- Upcoming Shifts Reminder -->
+    <div class="col-12" id="upcomingShiftsSection"></div>
+
     <!-- Calendar Summary -->
     <div class="col-12">
         <div class="card">
@@ -290,6 +293,99 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.addEventListener('click', function() { openLogbook(this.dataset.id); });
                 });
             });
+    }
+
+    // --- Upcoming Shifts Reminder ---
+    function loadUpcomingShifts() {
+        fetch('{{ route("dashboard.upcoming-shifts") }}', { headers: { 'Accept': 'application/json' } })
+            .then(r => r.json())
+            .then(data => {
+                const section = document.getElementById('upcomingShiftsSection');
+                if (!data.shifts || data.shifts.length === 0) {
+                    section.innerHTML = '';
+                    return;
+                }
+
+                const rows = data.shifts.map((s, idx) => {
+                    const startDate = new Date(s.start_iso);
+                    const endDate   = new Date(s.end_iso);
+                    const now       = Date.now();
+                    const diffMs    = startDate.getTime() - now;
+                    const isOngoing = s.status === 'ongoing' || (startDate.getTime() <= now && endDate.getTime() > now);
+
+                    // Build countdown text
+                    let countdownHtml = '';
+                    if (isOngoing) {
+                        const leftMs = endDate.getTime() - now;
+                        countdownHtml = `<span class="badge bg-label-warning ms-2"><i class="ti ti-clock-play ti-xs me-1"></i>In progress</span>`;
+                    } else if (diffMs > 0) {
+                        const totalMin = Math.floor(diffMs / 60000);
+                        const h = Math.floor(totalMin / 60);
+                        const m = totalMin % 60;
+                        const txt = h > 0 ? `${h}h ${m}m` : `${m}m`;
+                        const urgency = totalMin <= 60 ? 'danger' : (totalMin <= 360 ? 'warning' : 'info');
+                        countdownHtml = `<span class="badge bg-label-${urgency} ms-2"><i class="ti ti-hourglass ti-xs me-1"></i>in ${txt}</span>`;
+                    }
+
+                    const isFirst = idx === 0;
+                    const assignedBadge = s.is_assigned
+                        ? `<span class="badge rounded-pill ms-1" style="background:#00bad1;color:#fff;font-size:.62rem">Assigned</span>`
+                        : '';
+
+                    const dayColor = s.day_label === 'Today' ? 'danger' : (s.day_label === 'Tomorrow' ? 'warning' : 'secondary');
+
+                    return `
+                    <div class="d-flex align-items-center gap-3 py-3 ${idx < data.shifts.length - 1 ? 'border-bottom' : ''}">
+                        <!-- Day label pill -->
+                        <div class="text-center flex-shrink-0" style="min-width:58px">
+                            <span class="badge bg-label-${dayColor} d-block mb-1" style="font-size:.7rem">${s.day_label}</span>
+                            <small class="text-muted" style="font-size:.65rem">${s.date_fmt}</small>
+                        </div>
+
+                        <!-- Time block -->
+                        <div class="avatar avatar-sm flex-shrink-0 ${isFirst ? '' : ''}">
+                            <span class="avatar-initial rounded-circle bg-label-primary">
+                                <i class="ti ti-${isOngoing ? 'clock-play' : 'alarm'} ti-sm"></i>
+                            </span>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="d-flex align-items-center flex-wrap gap-1">
+                                <span class="fw-semibold" style="font-size:.88rem">${s.time_start} &ndash; ${s.time_end}</span>
+                                <span class="text-muted" style="font-size:.75rem">(${s.duration_hours}h)</span>
+                                ${assignedBadge}
+                                ${countdownHtml}
+                            </div>
+                            <div class="text-muted text-truncate" style="font-size:.78rem">${s.caption || '<em>No caption</em>'}</div>
+                        </div>
+
+                        <!-- View link -->
+                        <a href="{{ route('schedules.index') }}" class="btn btn-sm btn-icon btn-text-primary flex-shrink-0" title="View on calendar">
+                            <i class="ti ti-calendar-event"></i>
+                        </a>
+                    </div>`;
+                }).join('');
+
+                section.innerHTML = `
+                <div class="card">
+                    <div class="card-header d-flex align-items-center justify-content-between py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="avatar avatar-sm rounded">
+                                <span class="avatar-initial bg-label-primary rounded">
+                                    <i class="ti ti-calendar-time"></i>
+                                </span>
+                            </span>
+                            <h5 class="card-title mb-0">Upcoming Shifts</h5>
+                        </div>
+                        <span class="badge bg-label-primary">${data.shifts.length} shift${data.shifts.length !== 1 ? 's' : ''} ahead</span>
+                    </div>
+                    <div class="card-body py-0 px-4">
+                        ${rows}
+                    </div>
+                </div>`;
+            })
+            .catch(() => {});
     }
 
     // --- Stamp Entry ---
@@ -582,11 +678,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Init ---
     loadStats();
     loadPresenceReminders();
+    loadUpcomingShifts();
     autoUpdate();
 
     // Refresh every 60 seconds
     setInterval(() => {
         loadPresenceReminders();
+        loadUpcomingShifts();
         loadStats();
         autoUpdate();
     }, 60000);

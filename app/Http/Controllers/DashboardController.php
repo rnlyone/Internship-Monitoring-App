@@ -57,4 +57,52 @@ class DashboardController extends Controller
 
         return response()->json($stats);
     }
+
+    /**
+     * Return the current user's upcoming approved shifts (next 7 days).
+     */
+    public function upcomingShifts(): JsonResponse
+    {
+        $user = Auth::user();
+        $now  = Carbon::now('Asia/Singapore');
+
+        $slots = ScheduleSlot::where('user_id', $user->id)
+            ->where('approval_status', 'approved')
+            ->whereIn('status', ['not_yet', 'ongoing'])
+            ->where('start_shift', '>=', $now->copy()->subHours(1)) // include just-started shifts
+            ->where('start_shift', '<=', $now->copy()->addDays(7))
+            ->orderBy('start_shift')
+            ->limit(10)
+            ->get();
+
+        $shifts = $slots->map(function ($slot) use ($now) {
+            $start       = $slot->start_shift->setTimezone('Asia/Singapore');
+            $end         = $slot->end_shift->setTimezone('Asia/Singapore');
+            $diffSeconds = $start->diffInSeconds($now, false); // negative = future
+
+            if ($start->isToday()) {
+                $dayLabel = 'Today';
+            } elseif ($start->isTomorrow()) {
+                $dayLabel = 'Tomorrow';
+            } else {
+                $dayLabel = $start->format('D, d M');
+            }
+
+            return [
+                'id'            => $slot->id,
+                'day_label'     => $dayLabel,
+                'date_fmt'      => $start->format('d M Y'),
+                'time_start'    => $start->format('H:i'),
+                'time_end'      => $end->format('H:i'),
+                'duration_hours'=> $slot->duration_hours,
+                'caption'       => $slot->caption,
+                'status'        => $slot->status,
+                'is_assigned'   => $slot->assigned_by !== null,
+                'start_iso'     => $slot->start_shift->format('Y-m-d\TH:i:sP'),
+                'end_iso'       => $slot->end_shift->format('Y-m-d\TH:i:sP'),
+            ];
+        });
+
+        return response()->json(['shifts' => $shifts]);
+    }
 }
