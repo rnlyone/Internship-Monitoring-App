@@ -35,8 +35,8 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icons.css') }}" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
     <!-- Vendors CSS -->
@@ -49,8 +49,6 @@
 
     <!-- Helpers -->
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/template-customizer.js') }}"></script>
-    <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
 
 <body>
@@ -237,31 +235,6 @@
                                 </ul>
                             </li>
                             <!-- / Notifications -->
-
-                            <!-- Style Switcher -->
-                            <li class="nav-item dropdown-style-switcher dropdown">
-                                <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-                                    <i class='ti ti-md'></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
-                                            <span class="align-middle"><i class='ti ti-sun ti-md me-3'></i>Light</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-theme="dark">
-                                            <span class="align-middle"><i class="ti ti-moon-stars ti-md me-3"></i>Dark</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-theme="system">
-                                            <span class="align-middle"><i class="ti ti-device-desktop-analytics ti-md me-3"></i>System</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <!-- / Style Switcher -->
 
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
