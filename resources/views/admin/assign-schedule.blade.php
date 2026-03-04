@@ -23,7 +23,7 @@
     border-radius: 20px;
     font-size: .7rem;
     font-weight: 600;
-    background: linear-gradient(135deg,#e83e8c,#ff4757);
+    background: linear-gradient(135deg,#00bad1,#0d6efd);
     color: #fff;
     white-space: nowrap;
 }
@@ -35,7 +35,7 @@
     <div class="col-xl-4 col-lg-5 mb-6">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="avatar avatar-sm rounded flex-shrink-0" style="background:linear-gradient(135deg,#e83e8c,#ff4757)">
+                <span class="avatar avatar-sm rounded flex-shrink-0" style="background:linear-gradient(135deg,#00bad1,#0d6efd)">
                     <i class="ti ti-calendar-plus text-white"></i>
                 </span>
                 <h5 class="card-title mb-0">Assign Schedule</h5>
@@ -105,7 +105,7 @@
                         <div class="mt-2 small text-muted" id="selectedCount">0 intern(s) selected</div>
                     </div>
 
-                    <button type="submit" class="btn w-100" style="background:linear-gradient(135deg,#e83e8c,#ff4757);color:#fff;border:none">
+                    <button type="submit" class="btn w-100" style="background:linear-gradient(135deg,#00bad1,#0d6efd);color:#fff;border:none">
                         <i class="ti ti-calendar-plus me-2"></i>Assign Schedule
                     </button>
                 </form>
@@ -143,7 +143,7 @@
                             <td>
                                 <div class="d-flex align-items-center gap-2">
                                     <span class="avatar avatar-xs rounded-circle"
-                                          style="background:linear-gradient(135deg,#e83e8c,#ff4757);color:#fff;font-size:.6rem;font-weight:700">
+                                          style="background:linear-gradient(135deg,#00bad1,#0d6efd);color:#fff;font-size:.6rem;font-weight:700">
                                         {{ strtoupper(substr($slot->user->name, 0, 2)) }}
                                     </span>
                                     <div>

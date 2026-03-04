@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h6 class="mb-0">${props.user_name}</h6>
                     ${statusBadge[props.status] || ''}
                 </div>
-                ${props.is_assigned ? `<div class="mb-2"><span class="badge rounded-pill" style="background:#e83e8c;color:#fff;font-size:.72rem"><i class="ti ti-user-check me-1"></i>Assigned by ${props.assigned_by_name ?? 'Admin'}</span></div>` : ''}
+                ${props.is_assigned ? `<div class="mb-2"><span class="badge rounded-pill" style="background:#00bad1;color:#fff;font-size:.72rem"><i class="ti ti-user-check me-1"></i>Assigned by ${props.assigned_by_name ?? 'Admin'}</span></div>` : ''}
                 <p class="text-muted mb-1">${props.caption || 'No caption'}</p>
             </div>
             <div class="row mb-3">

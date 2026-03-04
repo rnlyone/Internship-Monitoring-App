@@ -47,13 +47,13 @@ class ScheduleController extends Controller
             if ($isAssigned) {
                 // Red / pink palette for admin-assigned schedules
                 $colorMap = [
-                    'not_yet'  => '#e83e8c',
-                    'ongoing'  => '#fd3995',
-                    'done'     => '#ff8fab',
-                    'late'     => '#c0392b',
+                    'not_yet'  => '#00bad1',
+                    'ongoing'  => '#0d6efd',
+                    'done'     => '#20c997',
+                    'late'     => '#6610f2',
                     'absence'  => '#82868b',
                 ];
-                $bgColor     = $colorMap[$slot->status] ?? '#e83e8c';
+                $bgColor     = $colorMap[$slot->status] ?? '#00bad1';
                 $borderColor = $bgColor;
                 $textColor   = '#fff';
                 $classNames  = ['fc-event-assigned'];

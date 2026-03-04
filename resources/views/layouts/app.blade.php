@@ -389,7 +389,7 @@
             schedule_submitted : { icon: 'ti-calendar-plus',  color: 'warning'   },
             schedule_approved  : { icon: 'ti-circle-check',   color: 'success'   },
             schedule_rejected  : { icon: 'ti-circle-x',       color: 'danger'    },
-            schedule_assigned  : { icon: 'ti-calendar-event', color: 'danger'    },
+            schedule_assigned  : { icon: 'ti-calendar-event', color: 'info'      },
             kanban_assigned    : { icon: 'ti-clipboard-check', color: 'info'     },
             kanban_done        : { icon: 'ti-checklist',       color: 'success'  },
         };
