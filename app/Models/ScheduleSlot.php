@@ -17,6 +17,7 @@ class ScheduleSlot extends Model
         'caption',
         'status',
         'approval_status',
+        'assigned_by',
     ];
 
     protected function casts(): array
@@ -30,6 +31,16 @@ class ScheduleSlot extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function assignedBy()
+    {
+        return $this->belongsTo(User::class, 'assigned_by');
+    }
+
+    public function isAssigned(): bool
+    {
+        return $this->assigned_by !== null;
     }
 
     public function presenceStamps()

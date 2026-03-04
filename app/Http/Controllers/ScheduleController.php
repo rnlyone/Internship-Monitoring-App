@@ -26,7 +26,7 @@ class ScheduleController extends Controller
      */
     public function events(Request $request): JsonResponse
     {
-        $query = ScheduleSlot::with('user:id,name', 'entryStamp', 'exitStamp');
+        $query = ScheduleSlot::with('user:id,name', 'assignedBy:id,name', 'entryStamp', 'exitStamp');
 
         // If filter for specific user
         if ($request->filled('user_id')) {
@@ -42,34 +42,58 @@ class ScheduleController extends Controller
         $slots = $query->orderBy('start_shift')->get();
 
         $events = $slots->map(function ($slot) {
-            $colorMap = [
-                'not_yet'  => '#7367f0',
-                'ongoing'  => '#ff9f43',
-                'done'     => '#28c76f',
-                'late'     => '#ea5455',
-                'absence'  => '#82868b',
-            ];
+            $isAssigned = $slot->assigned_by !== null;
 
-            $bgColor     = $colorMap[$slot->status] ?? '#7367f0';
-            $borderColor = $bgColor;
-            $textColor   = '#fff';
-            $classNames  = [];
+            if ($isAssigned) {
+                // Red / pink palette for admin-assigned schedules
+                $colorMap = [
+                    'not_yet'  => '#e83e8c',
+                    'ongoing'  => '#fd3995',
+                    'done'     => '#ff8fab',
+                    'late'     => '#c0392b',
+                    'absence'  => '#82868b',
+                ];
+                $bgColor     = $colorMap[$slot->status] ?? '#e83e8c';
+                $borderColor = $bgColor;
+                $textColor   = '#fff';
+                $classNames  = ['fc-event-assigned'];
 
-            if ($slot->approval_status === 'pending') {
-                $bgColor     = '#ff9f4333';
-                $borderColor = '#ff9f43';
-                $textColor   = '#ff9f43';
-                $classNames  = ['fc-event-pending'];
-            } elseif ($slot->approval_status === 'rejected') {
-                $bgColor     = '#82868b33';
-                $borderColor = '#82868b';
-                $textColor   = '#82868b';
-                $classNames  = ['fc-event-rejected'];
+                if ($slot->approval_status === 'rejected') {
+                    $bgColor     = '#82868b33';
+                    $borderColor = '#82868b';
+                    $textColor   = '#82868b';
+                    $classNames  = ['fc-event-rejected'];
+                }
+            } else {
+                $colorMap = [
+                    'not_yet'  => '#7367f0',
+                    'ongoing'  => '#ff9f43',
+                    'done'     => '#28c76f',
+                    'late'     => '#ea5455',
+                    'absence'  => '#82868b',
+                ];
+
+                $bgColor     = $colorMap[$slot->status] ?? '#7367f0';
+                $borderColor = $bgColor;
+                $textColor   = '#fff';
+                $classNames  = [];
+
+                if ($slot->approval_status === 'pending') {
+                    $bgColor     = '#ff9f4333';
+                    $borderColor = '#ff9f43';
+                    $textColor   = '#ff9f43';
+                    $classNames  = ['fc-event-pending'];
+                } elseif ($slot->approval_status === 'rejected') {
+                    $bgColor     = '#82868b33';
+                    $borderColor = '#82868b';
+                    $textColor   = '#82868b';
+                    $classNames  = ['fc-event-rejected'];
+                }
             }
 
             return [
                 'id'              => $slot->id,
-                'title'           => $slot->user->name . ($slot->caption ? ' - ' . $slot->caption : ''),
+                'title'           => $slot->user->name . ($slot->caption ? ' — ' . $slot->caption : '') . ($isAssigned ? ' 📌' : ''),
                 'start'           => $slot->start_shift->format('Y-m-d\TH:i:sP'),
                 'end'             => $slot->end_shift->format('Y-m-d\TH:i:sP'),
                 'backgroundColor' => $bgColor,
@@ -77,17 +101,19 @@ class ScheduleController extends Controller
                 'textColor'       => $textColor,
                 'classNames'      => $classNames,
                 'extendedProps'   => [
-                    'schedule_id'     => $slot->id,
-                    'user_id'         => $slot->user_id,
-                    'user_name'       => $slot->user->name,
-                    'caption'         => $slot->caption,
-                    'status'          => $slot->status,
-                    'approval_status' => $slot->approval_status,
-                    'duration_hours'  => $slot->duration_hours,
-                    'has_entry'       => $slot->entryStamp !== null,
-                    'has_exit'        => $slot->exitStamp !== null,
-                    'start_iso'       => $slot->start_shift->format('Y-m-d\TH:i:sP'),
-                    'end_iso'         => $slot->end_shift->format('Y-m-d\TH:i:sP'),
+                    'schedule_id'       => $slot->id,
+                    'user_id'           => $slot->user_id,
+                    'user_name'         => $slot->user->name,
+                    'caption'           => $slot->caption,
+                    'status'            => $slot->status,
+                    'approval_status'   => $slot->approval_status,
+                    'duration_hours'    => $slot->duration_hours,
+                    'has_entry'         => $slot->entryStamp !== null,
+                    'has_exit'          => $slot->exitStamp !== null,
+                    'start_iso'         => $slot->start_shift->format('Y-m-d\TH:i:sP'),
+                    'end_iso'           => $slot->end_shift->format('Y-m-d\TH:i:sP'),
+                    'is_assigned'       => $isAssigned,
+                    'assigned_by_name'  => $slot->assignedBy?->name,
                 ],
             ];
         });

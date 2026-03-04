@@ -114,6 +114,13 @@
                         </a>
                     </li>
 
+                    <li class="menu-item {{ request()->routeIs('admin.schedule-assign.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.schedule-assign.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-calendar-plus"></i>
+                            <div data-i18n="Assign Schedule">Assign Schedules</div>
+                        </a>
+                    </li>
+
                     <li class="menu-item {{ request()->routeIs('admin.logbooks.*') ? 'active' : '' }}">
                         <a href="{{ route('admin.logbooks.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-notebook"></i>
@@ -382,6 +389,7 @@
             schedule_submitted : { icon: 'ti-calendar-plus',  color: 'warning'   },
             schedule_approved  : { icon: 'ti-circle-check',   color: 'success'   },
             schedule_rejected  : { icon: 'ti-circle-x',       color: 'danger'    },
+            schedule_assigned  : { icon: 'ti-calendar-event', color: 'danger'    },
             kanban_assigned    : { icon: 'ti-clipboard-check', color: 'info'     },
             kanban_done        : { icon: 'ti-checklist',       color: 'success'  },
         };

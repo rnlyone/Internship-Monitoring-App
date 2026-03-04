@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminScheduleAssignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminApprovalController;
 use App\Http\Controllers\AdminLogbookController;
@@ -93,6 +94,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
         Route::put('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
         Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+
+        // Schedule assignment (admin assigns to interns)
+        Route::get('/admin/schedule-assign', [AdminScheduleAssignController::class, 'index'])->name('admin.schedule-assign.index');
+        Route::post('/admin/schedule-assign', [AdminScheduleAssignController::class, 'store'])->name('admin.schedule-assign.store');
+        Route::delete('/admin/schedule-assign/{schedule}', [AdminScheduleAssignController::class, 'destroy'])->name('admin.schedule-assign.destroy');
     });
 });
 

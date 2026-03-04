@@ -400,6 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <h6 class="mb-0">${props.user_name}</h6>
                     ${statusBadge[props.status] || ''}
                 </div>
+                ${props.is_assigned ? `<div class="mb-2"><span class="badge rounded-pill" style="background:#e83e8c;color:#fff;font-size:.72rem"><i class="ti ti-user-check me-1"></i>Assigned by ${props.assigned_by_name ?? 'Admin'}</span></div>` : ''}
                 <p class="text-muted mb-1">${props.caption || 'No caption'}</p>
             </div>
             <div class="row mb-3">
@@ -464,8 +465,8 @@ document.addEventListener('DOMContentLoaded', function() {
         _countdownTimer = setInterval(tickCountdown, 1000);
 
         let footerHtml = '';
-        // Owner can edit schedules that are not finalized
-        if (props.user_id == currentUserId && ['not_yet'].includes(props.status)) {
+        // Owner can edit self-signed schedules that are not finalized (assigned schedules are not editable by intern)
+        if (props.user_id == currentUserId && ['not_yet'].includes(props.status) && !props.is_assigned) {
             footerHtml += `<button class="btn btn-outline-primary" id="editEventBtn"><i class="ti ti-pencil me-1"></i>Edit</button>`;
         }
         // Owner can open logbook if entry was stamped
