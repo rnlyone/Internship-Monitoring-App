@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar = new Calendar(calendarEl, {
         plugins: [timegridPlugin, listPlugin, interactionPlugin],
         timeZone: 'Asia/Singapore',
-        initialView: 'listWeek',
+        initialView: 'timeGridWeek',
         headerToolbar: {
             start: 'prev,next today',
             center: 'title',
