@@ -9,7 +9,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/icons/icon-192x192.png" />
 
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json" />
@@ -19,9 +20,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name', 'Log Mieru') }}" />
     <meta name="description" content="Internship monitoring and logbook management system" />
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
-    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" href="/icons/icon.svg" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.svg" />
+    <meta name="msapplication-TileImage" content="/icons/icon-192x192.png" />
     <meta name="msapplication-TileColor" content="#7367f0" />
 
     <!-- Fonts -->
@@ -63,12 +64,7 @@
                 <div class="app-brand demo">
                     <a href="{{ route('dashboard') }}" class="app-brand-link">
                         <span class="app-brand-logo demo">
-                            <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M0.00172773 0V6.85398C0.00172773 6.85398 -0.133178 9.01207 1.98092 10.8388L13.6912 21.9964L19.7809 21.9181L18.8042 9.88248L16.4951 7.17289L9.23799 0H0.00172773Z" fill="#7367F0" />
-                                <path opacity="0.06" fill-rule="evenodd" clip-rule="evenodd" d="M7.69824 16.4364L12.5199 3.23696L16.5541 7.25596L7.69824 16.4364Z" fill="#161616" />
-                                <path opacity="0.06" fill-rule="evenodd" clip-rule="evenodd" d="M8.07751 15.9175L13.9419 4.63989L16.5849 7.28475L8.07751 15.9175Z" fill="#161616" />
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z" fill="#7367F0" />
-                            </svg>
+                            <img src="/icons/icon-72x72.svg" width="32" height="32" alt="{{ config('app.name', 'Log Mieru') }}" />
                         </span>
                         <span class="app-brand-text demo menu-text fw-bold">{{ config('app.name', 'Laravel') }}</span>
                     </a>
