@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar = new Calendar(calendarEl, {
         plugins: [timegridPlugin, listPlugin, interactionPlugin],
         timeZone: 'Asia/Singapore',
-        initialView: 'timeGridWeek',
+        initialView: 'listWeek',
         headerToolbar: {
             start: 'prev,next today',
             center: 'title',
@@ -519,15 +519,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     calendar.render();
-
-    // Ensure default calendar view: week on desktop, day on small screens
-    try {
-        const preferredView = window.matchMedia('(max-width: 576px)').matches ? 'timeGridDay' : 'timeGridWeek';
-        calendar.changeView(preferredView);
-    } catch (e) {
-        // ignore if changeView fails for any reason
-        console.warn('Unable to enforce preferred calendar view', e);
-    }
 
     // Filter toggle
     document.getElementById('filterMySchedules').addEventListener('change', function() {
