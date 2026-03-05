@@ -9,8 +9,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-    <link rel="alternate icon" href="/icons/icon-192x192.png" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('icons/icon.svg') }}" />
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}" />
 
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json" />
@@ -20,9 +20,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name', 'Log Mieru') }}" />
     <meta name="description" content="Internship monitoring and logbook management system" />
-    <link rel="apple-touch-icon" href="/icons/icon.svg" />
-    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.svg" />
-    <meta name="msapplication-TileImage" content="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
     <meta name="msapplication-TileColor" content="#7367f0" />
 
     <!-- Fonts -->
@@ -64,7 +64,11 @@
                 <div class="app-brand demo">
                     <a href="{{ route('dashboard') }}" class="app-brand-link">
                         <span class="app-brand-logo demo">
-                            <img src="/icons/icon-72x72.svg" width="32" height="32" alt="{{ config('app.name', 'Log Mieru') }}" />
+                            <svg width="28" height="22" viewBox="0 0 523.096 401.249" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M55.4517 16.0557C25.0817 16.0557 0.461914 40.8559 0.461914 71.4485C0.461914 253.205 146.732 400.547 327.166 400.547C357.536 400.547 382.155 375.747 382.155 345.154C382.155 314.562 357.536 289.761 327.166 289.761C207.472 289.761 110.441 192.02 110.441 71.4485C110.441 40.8559 85.8216 16.0557 55.4517 16.0557Z" fill="#7367F0"/>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M418.67 55.6451C441.252 62.5899 458.862 82.4786 455.346 105.998C454.326 112.823 452.797 119.657 450.736 126.456C428.037 201.354 349.36 243.535 275.007 220.668C200.654 197.803 158.78 118.549 181.48 43.651C183.54 36.8524 186.063 30.3233 189 24.088C199.123 2.60107 224.759 -3.9887 247.341 2.95602L418.67 55.6451Z" fill="#7367F0"/>
+                                <path d="M412.191 265.091C412.191 295.94 437.018 320.949 467.643 320.949C498.268 320.949 523.095 295.94 523.095 265.091C523.095 234.241 498.268 209.232 467.643 209.232C437.018 209.232 412.191 234.241 412.191 265.091Z" fill="#7367F0"/>
+                            </svg>
                         </span>
                         <span class="app-brand-text demo menu-text fw-bold">{{ config('app.name', 'Laravel') }}</span>
                     </a>

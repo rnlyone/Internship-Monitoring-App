@@ -9,8 +9,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-    <link rel="alternate icon" href="/icons/icon-192x192.png" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('icons/icon.svg') }}" />
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('icons/icon-192x192.png') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
