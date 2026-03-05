@@ -520,6 +520,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     calendar.render();
 
+    // Ensure default calendar view: week on desktop, day on small screens
+    try {
+        const preferredView = window.matchMedia('(max-width: 576px)').matches ? 'timeGridDay' : 'timeGridWeek';
+        calendar.changeView(preferredView);
+    } catch (e) {
+        // ignore if changeView fails for any reason
+        console.warn('Unable to enforce preferred calendar view', e);
+    }
+
     // Filter toggle
     document.getElementById('filterMySchedules').addEventListener('change', function() {
         filterMine = this.checked;
