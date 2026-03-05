@@ -126,7 +126,7 @@
                 <h5 class="mb-0"><i class="ti ti-calendar me-2"></i>Schedule Overview</h5>
                 <div class="d-flex gap-2 align-items-center">
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="filterMySchedules">
+                        <input class="form-check-input" type="checkbox" id="filterMySchedules" checked>
                         <label class="form-check-label" for="filterMySchedules">My Schedules Only</label>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     const currentUserId = {{ Auth::id() }};
     const isAdmin = {{ Auth::user()->isAdmin() ? 'true' : 'false' }};
-    let filterMine = false;
+    let filterMine = true;
     let calendar;
 
     // --- Load Dashboard Stats ---
@@ -519,6 +519,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     calendar.render();
+
+    // Ensure calendar initially fetches using the "My Schedules Only" filter
+    try { calendar.refetchEvents(); } catch (e) { /* ignore */ }
 
     // Filter toggle
     document.getElementById('filterMySchedules').addEventListener('change', function() {
