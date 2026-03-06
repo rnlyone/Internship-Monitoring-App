@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminPerformanceController;
 use App\Http\Controllers\AdminScheduleAssignController;
+use App\Http\Controllers\AdminWeeklyHoursController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminApprovalController;
 use App\Http\Controllers\AdminLogbookController;
@@ -110,6 +111,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Performance monitoring
         Route::get('/admin/performance', [AdminPerformanceController::class, 'index'])->name('admin.performance.index');
         Route::get('/admin/performance/data', [AdminPerformanceController::class, 'data'])->name('admin.performance.data');
+
+        // Weekly hours & submission review
+        Route::get('/admin/weekly-hours', [AdminWeeklyHoursController::class, 'index'])->name('admin.weekly-hours.index');
+        Route::get('/admin/weekly-hours/data', [AdminWeeklyHoursController::class, 'data'])->name('admin.weekly-hours.data');
     });
 });
 

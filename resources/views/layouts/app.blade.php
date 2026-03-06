@@ -167,6 +167,13 @@
                         </a>
                     </li>
 
+                    <li class="menu-item {{ request()->routeIs('admin.weekly-hours.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.weekly-hours.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons ti ti-calendar-week"></i>
+                            <div data-i18n="Weekly Hours">Weekly Hours</div>
+                        </a>
+                    </li>
+
                     <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                         <a href="{{ route('admin.users.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-users"></i>
