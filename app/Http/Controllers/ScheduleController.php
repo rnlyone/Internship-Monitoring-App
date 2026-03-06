@@ -33,10 +33,15 @@ class ScheduleController extends Controller
             $query->where('user_id', $request->user_id);
         }
 
-        // Date range for calendar view
+        // Date range for calendar view — use overlap detection so events that
+        // start before or end after the visible boundary are still included.
+        // Carbon::parse() normalises the ISO 8601 string (incl. +08:00 offset)
+        // that FullCalendar sends so MySQL always receives a clean SGT datetime.
         if ($request->filled('start') && $request->filled('end')) {
-            $query->where('start_shift', '>=', $request->start)
-                  ->where('end_shift', '<=', $request->end);
+            $rangeStart = Carbon::parse($request->start);
+            $rangeEnd   = Carbon::parse($request->end);
+            $query->where('start_shift', '<', $rangeEnd)
+                  ->where('end_shift',   '>', $rangeStart);
         }
 
         $slots = $query->orderBy('start_shift')->get();

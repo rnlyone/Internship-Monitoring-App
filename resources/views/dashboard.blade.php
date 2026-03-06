@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showScheduleDetail(info.event);
         },
         events: function(fetchInfo, successCallback, failureCallback) {
-            let url = '{{ route("schedules.events") }}?start=' + fetchInfo.startStr + '&end=' + fetchInfo.endStr;
+            let url = '{{ route("schedules.events") }}?start=' + encodeURIComponent(fetchInfo.startStr) + '&end=' + encodeURIComponent(fetchInfo.endStr);
             if (filterMine) url += '&user_id=' + currentUserId;
             fetch(url, { headers: { 'Accept': 'application/json' } })
                 .then(r => r.json())

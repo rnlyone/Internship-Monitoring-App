@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadWeeklyHours();
         },
         events: function(fetchInfo, successCallback, failureCallback) {
-            let url = '{{ route("schedules.events") }}?start=' + fetchInfo.startStr + '&end=' + fetchInfo.endStr;
+            let url = '{{ route("schedules.events") }}?start=' + encodeURIComponent(fetchInfo.startStr) + '&end=' + encodeURIComponent(fetchInfo.endStr);
             if (!filterAllUsers) url += '&user_id=' + currentUserId;
             fetch(url, { headers: { 'Accept': 'application/json' } })
                 .then(r => r.json())
