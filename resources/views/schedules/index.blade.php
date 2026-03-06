@@ -294,9 +294,9 @@ document.addEventListener('DOMContentLoaded', function() {
         _isRescheduleMode = false;
         document.getElementById('scheduleHoursWarning').classList.add('d-none');
 
-        if (start) startPicker.setDate(start, true);
+        if (start) startPicker.setDate(start.slice(0, 16).replace('T', ' '), true);
         else startPicker.clear();
-        if (end) endPicker.setDate(end, true);
+        if (end) endPicker.setDate(end.slice(0, 16).replace('T', ' '), true);
         else endPicker.clear();
 
         scheduleModal.show();
@@ -320,13 +320,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (_isRescheduleMode) {
             // Pre-fill with current approved times so intern only changes what they need
             document.getElementById('scheduleCaption').value = props.caption || '';
-            startPicker.setDate(new Date(props.start_iso), true);
-            endPicker.setDate(new Date(props.end_iso), true);
         } else {
             document.getElementById('scheduleCaption').value = props.caption || '';
-            startPicker.setDate(eventData.start, true);
-            endPicker.setDate(eventData.end, true);
         }
+        // Always use the server-formatted SGT datetime string (slice ISO to 'Y-m-d H:i').
+        // Using eventData.start (a JS Date) would apply the browser's local timezone
+        // instead of Asia/Singapore, causing the saved time to shift on non-SGT browsers.
+        startPicker.setDate(props.start_iso.slice(0, 16).replace('T', ' '), true);
+        endPicker.setDate(props.end_iso.slice(0, 16).replace('T', ' '), true);
 
         scheduleModal.show();
     }
