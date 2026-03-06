@@ -231,6 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
         plugins: [timegridPlugin, listPlugin, interactionPlugin],
         timeZone: 'Asia/Singapore',
         initialView: 'timeGridWeek',
+        firstDay: 1,
         headerToolbar: {
             start: 'prev,next today',
             center: 'title',
