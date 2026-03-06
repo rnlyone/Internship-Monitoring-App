@@ -18,13 +18,19 @@ class ScheduleSlot extends Model
         'status',
         'approval_status',
         'assigned_by',
+        'pending_start',
+        'pending_end',
+        'pending_caption',
+        'reschedule_status',
     ];
 
     protected function casts(): array
     {
         return [
-            'start_shift' => 'datetime',
-            'end_shift' => 'datetime',
+            'start_shift'   => 'datetime',
+            'end_shift'     => 'datetime',
+            'pending_start' => 'datetime',
+            'pending_end'   => 'datetime',
         ];
     }
 

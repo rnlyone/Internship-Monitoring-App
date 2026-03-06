@@ -112,8 +112,12 @@ class ScheduleController extends Controller
                     'has_exit'          => $slot->exitStamp !== null,
                     'start_iso'         => $slot->start_shift->format('Y-m-d\TH:i:sP'),
                     'end_iso'           => $slot->end_shift->format('Y-m-d\TH:i:sP'),
-                    'is_assigned'       => $isAssigned,
-                    'assigned_by_name'  => $slot->assignedBy?->name,
+                    'is_assigned'          => $isAssigned,
+                    'assigned_by_name'     => $slot->assignedBy?->name,
+                    'reschedule_status'    => $slot->reschedule_status,
+                    'pending_start_iso'    => $slot->pending_start?->format('Y-m-d\TH:i:sP'),
+                    'pending_end_iso'      => $slot->pending_end?->format('Y-m-d\TH:i:sP'),
+                    'pending_caption'      => $slot->pending_caption,
                 ],
             ];
         });
@@ -222,6 +226,10 @@ class ScheduleController extends Controller
 
     /**
      * Update a schedule slot.
+     *
+     * Admin: direct update on any schedule regardless of status.
+     * Intern (approved schedule): stores a reschedule request in pending_* fields.
+     * Intern (pending/rejected schedule): direct update + reset approval to pending.
      */
     public function update(Request $request, ScheduleSlot $schedule): JsonResponse
     {
@@ -232,11 +240,6 @@ class ScheduleController extends Controller
             return response()->json(['message' => 'Unauthorized.'], 403);
         }
 
-        // Cannot edit if already done/absence
-        if (in_array($schedule->status, ['done', 'absence'])) {
-            return response()->json(['message' => 'Cannot modify a completed or absent schedule.'], 422);
-        }
-
         $request->validate([
             'start_shift' => 'required|date',
             'end_shift'   => 'required|date|after:start_shift',
@@ -244,12 +247,82 @@ class ScheduleController extends Controller
         ]);
 
         $start = Carbon::parse($request->start_shift);
-        $end = Carbon::parse($request->end_shift);
+        $end   = Carbon::parse($request->end_shift);
 
-        // Max hours check (exclude current slot)
+        // ---- ADMIN: direct update, no restrictions ----
+        if ($user->isAdmin()) {
+            // Overlap check (exclude self)
+            $overlap = ScheduleSlot::where('user_id', $schedule->user_id)
+                ->where('id', '!=', $schedule->id)
+                ->where(function ($q) use ($start, $end) {
+                    $q->where('start_shift', '<', $end)->where('end_shift', '>', $start);
+                })->exists();
+
+            if ($overlap) {
+                return response()->json(['message' => 'This schedule overlaps with an existing one.'], 422);
+            }
+
+            $schedule->update([
+                'start_shift'       => $start,
+                'end_shift'         => $end,
+                'caption'           => $request->caption,
+                // Clear any pending reschedule when admin directly edits
+                'pending_start'     => null,
+                'pending_end'       => null,
+                'pending_caption'   => null,
+                'reschedule_status' => null,
+            ]);
+
+            $schedule->load('user:id,name');
+            return response()->json(['message' => 'Schedule updated successfully.', 'schedule' => $schedule]);
+        }
+
+        // ---- INTERN: cannot edit done/absence directly ----
+        if (in_array($schedule->status, ['done', 'absence'])) {
+            return response()->json(['message' => 'Cannot modify a completed or absent schedule.'], 422);
+        }
+
+        // ---- INTERN on approved schedule: submit reschedule request ----
+        if ($schedule->approval_status === 'approved') {
+            // Overlap check against original times (exclude self)
+            $overlap = ScheduleSlot::where('user_id', $schedule->user_id)
+                ->where('id', '!=', $schedule->id)
+                ->where(function ($q) use ($start, $end) {
+                    $q->where('start_shift', '<', $end)->where('end_shift', '>', $start);
+                })->exists();
+
+            if ($overlap) {
+                return response()->json(['message' => 'The requested new time overlaps with an existing schedule.'], 422);
+            }
+
+            // Don't overwrite original times — store in pending fields
+            $schedule->update([
+                'pending_start'     => $start,
+                'pending_end'       => $end,
+                'pending_caption'   => $request->caption,
+                'reschedule_status' => 'pending',
+            ]);
+
+            $schedule->load('user:id,name');
+
+            Notification::notifyAdmins('reschedule_requested', [
+                'title'        => 'Reschedule Request',
+                'message'      => $schedule->user->name . ' requested to reschedule their shift on ' . $schedule->start_shift->format('D, d M Y') . '.',
+                'url'          => route('admin.approvals.index'),
+                'related_type' => 'schedule',
+                'related_id'   => (string) $schedule->id,
+            ]);
+
+            return response()->json([
+                'message'  => 'Reschedule request submitted. Your original schedule remains active until the admin approves.',
+                'schedule' => $schedule,
+            ]);
+        }
+
+        // ---- INTERN on pending/rejected schedule: direct update, re-submit ----
         $weekStart = $start->copy()->startOfWeek(Carbon::MONDAY);
         $weekEnd   = $start->copy()->endOfWeek(Carbon::SUNDAY);
-        $maxHours = (float) Setting::getValue('max_working_hours_per_week', 40);
+        $maxHours  = (float) Setting::getValue('max_working_hours_per_week', 40);
 
         $existingMinutes = ScheduleSlot::where('user_id', $schedule->user_id)
             ->where('id', '!=', $schedule->id)
@@ -265,7 +338,6 @@ class ScheduleController extends Controller
             ], 422);
         }
 
-        // Check overlapping
         $overlap = ScheduleSlot::where('user_id', $schedule->user_id)
             ->where('id', '!=', $schedule->id)
             ->where(function ($q) use ($start, $end) {
@@ -276,26 +348,25 @@ class ScheduleController extends Controller
             return response()->json(['message' => 'This schedule overlaps with an existing one.'], 422);
         }
 
-        $updateData = [
-            'start_shift' => $start,
-            'end_shift'   => $end,
-            'caption'     => $request->caption,
-        ];
+        $schedule->update([
+            'start_shift'     => $start,
+            'end_shift'       => $end,
+            'caption'         => $request->caption,
+            'approval_status' => 'pending',
+        ]);
 
-        // If intern edits, reset approval to pending
-        if ($user->isIntern()) {
-            $updateData['approval_status'] = 'pending';
-        }
-
-        $schedule->update($updateData);
         $schedule->load('user:id,name');
 
-        $message = $user->isIntern()
-            ? 'Schedule updated and resubmitted for approval.'
-            : 'Schedule updated successfully.';
+        Notification::notifyAdmins('schedule_submitted', [
+            'title'        => 'Schedule Resubmitted',
+            'message'      => $schedule->user->name . ' resubmitted a schedule for ' . $start->format('D, d M Y') . '.',
+            'url'          => route('admin.approvals.index'),
+            'related_type' => 'schedule',
+            'related_id'   => (string) $schedule->id,
+        ]);
 
         return response()->json([
-            'message'  => $message,
+            'message'  => 'Schedule updated and resubmitted for approval.',
             'schedule' => $schedule,
         ]);
     }

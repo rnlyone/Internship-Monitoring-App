@@ -298,16 +298,28 @@ document.addEventListener('DOMContentLoaded', function() {
         scheduleModal.show();
     }
 
+    // Track whether current edit is a reschedule request (intern on approved schedule)
+    let _isRescheduleMode = false;
+
     function openEditModal(eventData) {
         const props = eventData.extendedProps;
-        document.getElementById('scheduleModalTitle').textContent = 'Edit Schedule';
+        _isRescheduleMode = !isAdmin && props.approval_status === 'approved';
+
+        document.getElementById('scheduleModalTitle').textContent = _isRescheduleMode ? 'Request Reschedule' : 'Edit Schedule';
         document.getElementById('scheduleId').value = props.schedule_id;
-        document.getElementById('scheduleCaption').value = props.caption || '';
-        document.getElementById('deleteScheduleBtn').classList.remove('d-none');
+        document.getElementById('deleteScheduleBtn').classList.toggle('d-none', _isRescheduleMode);
         document.getElementById('scheduleHoursWarning').classList.add('d-none');
 
-        startPicker.setDate(eventData.start, true);
-        endPicker.setDate(eventData.end, true);
+        if (_isRescheduleMode) {
+            // Pre-fill with current approved times so intern only changes what they need
+            document.getElementById('scheduleCaption').value = props.caption || '';
+            startPicker.setDate(new Date(props.start_iso), true);
+            endPicker.setDate(new Date(props.end_iso), true);
+        } else {
+            document.getElementById('scheduleCaption').value = props.caption || '';
+            startPicker.setDate(eventData.start, true);
+            endPicker.setDate(eventData.end, true);
+        }
 
         scheduleModal.show();
     }
@@ -426,7 +438,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="ti ti-${props.has_exit ? 'check' : 'x'} me-1"></i>Exit
                 </span>
             </div>
-            ${props.approval_status !== 'approved' ? `
+            ${props.reschedule_status === 'pending' ? `
+            <div class="mt-3">
+                <div class="alert alert-info py-2 mb-0">
+                    <i class="ti ti-calendar-event me-1"></i>
+                    <strong>Reschedule Pending</strong> — Proposed: ${new Date(props.pending_start_iso).toLocaleString('en-GB', { timeZone: 'Asia/Singapore' })} – ${new Date(props.pending_end_iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:'Asia/Singapore' })}
+                    ${props.pending_caption ? '<br><small class="text-muted">' + props.pending_caption + '</small>' : ''}
+                </div>
+            </div>` : ''}
+            ${props.approval_status !== 'approved' && props.reschedule_status !== 'pending' ? `
             <div class="mt-3">
                 ${props.approval_status === 'pending'
                     ? '<div class="alert alert-warning py-2 mb-0"><i class="ti ti-clock me-1"></i><strong>Pending Approval</strong> — Awaiting admin review. Presence stamps are disabled until approved.</div>'
@@ -465,9 +485,19 @@ document.addEventListener('DOMContentLoaded', function() {
         _countdownTimer = setInterval(tickCountdown, 1000);
 
         let footerHtml = '';
-        // Owner can edit self-signed schedules that are not finalized (assigned schedules are not editable by intern)
-        if (props.user_id == currentUserId && ['not_yet'].includes(props.status) && !props.is_assigned) {
+        if (isAdmin) {
+            // Admin can directly edit any schedule regardless of status
             footerHtml += `<button class="btn btn-outline-primary" id="editEventBtn"><i class="ti ti-pencil me-1"></i>Edit</button>`;
+        } else if (props.user_id == currentUserId) {
+            if (props.approval_status === 'approved' && !['done','absence'].includes(props.status) && !props.is_assigned) {
+                // Intern on approved schedule: show reschedule request button (disabled if one already pending)
+                const hasPending = props.reschedule_status === 'pending';
+                footerHtml += `<button class="btn btn-outline-info" id="editEventBtn" ${hasPending ? 'disabled title="Reschedule already pending"' : ''}>
+                    <i class="ti ti-calendar-event me-1"></i>${hasPending ? 'Reschedule Pending…' : 'Request Reschedule'}</button>`;
+            } else if (['not_yet'].includes(props.status) && !props.is_assigned && props.approval_status !== 'approved') {
+                // Intern on not-yet-approved schedule: direct edit
+                footerHtml += `<button class="btn btn-outline-primary" id="editEventBtn"><i class="ti ti-pencil me-1"></i>Edit</button>`;
+            }
         }
         // Owner can open logbook if entry was stamped
         if (props.user_id == currentUserId && props.has_entry) {
