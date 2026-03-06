@@ -6,6 +6,7 @@
 <style>
 .fc .fc-timegrid-slot { height: 3em; }
 .weekly-hours-bar { transition: width 0.5s ease; }
+.fc-event-rescheduling { border-style: dashed !important; opacity: 0.85; }
 </style>
 @endpush
 
@@ -288,6 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('scheduleId').value = '';
         document.getElementById('scheduleCaption').value = '';
         document.getElementById('deleteScheduleBtn').classList.add('d-none');
+        document.getElementById('saveScheduleBtn').innerHTML = '<i class="ti ti-device-floppy me-1"></i>Save';
+        _isRescheduleMode = false;
         document.getElementById('scheduleHoursWarning').classList.add('d-none');
 
         if (start) startPicker.setDate(start, true);
@@ -309,6 +312,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('scheduleId').value = props.schedule_id;
         document.getElementById('deleteScheduleBtn').classList.toggle('d-none', _isRescheduleMode);
         document.getElementById('scheduleHoursWarning').classList.add('d-none');
+        document.getElementById('saveScheduleBtn').innerHTML = _isRescheduleMode
+            ? '<i class="ti ti-calendar-event me-1"></i>Submit Request'
+            : '<i class="ti ti-device-floppy me-1"></i>Save';
 
         if (_isRescheduleMode) {
             // Pre-fill with current approved times so intern only changes what they need
@@ -492,8 +498,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (props.approval_status === 'approved' && !['done','absence'].includes(props.status) && !props.is_assigned) {
                 // Intern on approved schedule: show reschedule request button (disabled if one already pending)
                 const hasPending = props.reschedule_status === 'pending';
-                footerHtml += `<button class="btn btn-outline-info" id="editEventBtn" ${hasPending ? 'disabled title="Reschedule already pending"' : ''}>
-                    <i class="ti ti-calendar-event me-1"></i>${hasPending ? 'Reschedule Pending…' : 'Request Reschedule'}</button>`;
+                footerHtml += `<button class="btn btn-outline-warning" id="editEventBtn" ${hasPending ? 'disabled title="Reschedule already pending"' : ''}>
+                    <i class="ti ti-calendar-event me-1"></i>${hasPending ? 'Reschedule Pending\u2026' : 'Request Reschedule'}</button>`;
             } else if (['not_yet'].includes(props.status) && !props.is_assigned && props.approval_status !== 'approved') {
                 // Intern on not-yet-approved schedule: direct edit
                 footerHtml += `<button class="btn btn-outline-primary" id="editEventBtn"><i class="ti ti-pencil me-1"></i>Edit</button>`;

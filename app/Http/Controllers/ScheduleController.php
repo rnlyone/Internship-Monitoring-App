@@ -93,13 +93,16 @@ class ScheduleController extends Controller
 
             return [
                 'id'              => $slot->id,
-                'title'           => $slot->user->name . ($slot->caption ? ' — ' . $slot->caption : '') . ($isAssigned ? ' 📌' : ''),
+                'title'           => $slot->user->name
+                    . ($slot->caption ? ' — ' . $slot->caption : '')
+                    . ($isAssigned ? ' 📌' : '')
+                    . ($slot->reschedule_status === 'pending' ? ' 🔄' : ''),
                 'start'           => $slot->start_shift->format('Y-m-d\TH:i:sP'),
                 'end'             => $slot->end_shift->format('Y-m-d\TH:i:sP'),
                 'backgroundColor' => $bgColor,
                 'borderColor'     => $borderColor,
                 'textColor'       => $textColor,
-                'classNames'      => $classNames,
+                'classNames'      => array_merge($classNames, $slot->reschedule_status === 'pending' ? ['fc-event-rescheduling'] : []),
                 'extendedProps'   => [
                     'schedule_id'       => $slot->id,
                     'user_id'           => $slot->user_id,
