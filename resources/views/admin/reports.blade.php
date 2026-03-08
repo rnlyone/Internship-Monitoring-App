@@ -320,7 +320,7 @@
         document.getElementById('rpDateFrom').value = '';
         document.getElementById('rpDateTo').value   = '';
         _expandedRows.clear();
-        document.getElementById('reportPanel').style.display = '';
+        document.getElementById('reportPanel').style.display = 'block';
         document.getElementById('reportPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
         loadReport();
     };
