@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panduan Penggunaan Aplikasi — Intern Staff</title>
+<style>
+  /* ── Base ─────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary:   #7367f0;
+    --success:   #28c76f;
+    --warning:   #ff9f43;
+    --danger:    #ea5455;
+    --info:      #00cfe8;
+    --teal:      #00bad1;
+    --secondary: #82868b;
+    --dark:      #4b465c;
+    --body-bg:   #f8f7fa;
+    --card-bg:   #fff;
+    --border:    #dbdade;
+    --text-muted:#a5a3ae;
+    --radius:    10px;
+    --shadow:    0 4px 18px 0 rgba(75,70,92,.10);
+  }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--dark);
+    background: #fff;
+  }
+
+  /* ── Print / Page Setup ────────────────────────────────────── */
+  @media print {
+    @page { size: A4; margin: 15mm 12mm 15mm 12mm; }
+    body { font-size: 11.5px; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    a { text-decoration: none; color: inherit; }
+    .cover { page-break-after: always; }
+    .toc-page { page-break-after: always; }
+  }
+
+  /* ── Cover ─────────────────────────────────────────────────── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #7367f0 0%, #9c8cfc 50%, #ce9ffc 100%);
+    color: #fff;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    background: rgba(255,255,255,.06);
+    border-radius: 50%;
+    top: -100px; right: -100px;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,.06);
+    border-radius: 50%;
+    bottom: -80px; left: -80px;
+  }
+  .cover-logo {
+    width: 72px; height: 72px;
+    background: rgba(255,255,255,.2);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 36px;
+  }
+  .cover h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+  .cover .subtitle { font-size: 16px; opacity: .85; margin-bottom: 6px; }
+  .cover .app-name {
+    display: inline-block;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 20px;
+    padding: 5px 18px;
+    font-size: 14px;
+    margin-bottom: 40px;
+  }
+  .cover-divider {
+    width: 60px; height: 3px;
+    background: rgba(255,255,255,.5);
+    border-radius: 2px;
+    margin: 28px auto;
+  }
+  .cover-meta { font-size: 12px; opacity: .7; }
+  .cover-badge {
+    display: inline-block;
+    background: rgba(255,255,255,.15);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 11px;
+    margin-top: 8px;
+  }
+
+  /* ── TOC ───────────────────────────────────────────────────── */
+  .toc-page { padding: 48px 0; }
+  .toc-page h2 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 24px; }
+  .toc-list { list-style: none; }
+  .toc-list li {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13.5px;
+  }
+  .toc-list li:last-child { border-bottom: none; }
+  .toc-chapter {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .toc-num {
+    width: 28px; height: 28px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .toc-title { font-weight: 600; }
+  .toc-sub { color: var(--text-muted); font-size: 11.5px; }
+  .toc-page-num {
+    color: var(--primary); font-weight: 600; font-size: 12px;
+    background: #f0eeff;
+    padding: 2px 10px; border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  /* ── Chapter header ────────────────────────────────────────── */
+  .chapter-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .chapter-header h2 { font-size: 20px; font-weight: 700; color: var(--dark); }
+  .chapter-header p { color: var(--text-muted); font-size: 12.5px; margin-top: 3px; }
+  .chapter-num { font-size: 11px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* ── Section ───────────────────────────────────────────────── */
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 13px; font-weight: 700; color: var(--dark);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px; height: 16px;
+    background: var(--primary);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Step list ─────────────────────────────────────────────── */
+  .steps { list-style: none; margin-bottom: 16px; }
+  .steps li {
+    display: flex; gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f4f7;
+  }
+  .steps li:last-child { border-bottom: none; }
+  .step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-content { flex: 1; }
+  .step-content strong { display: block; font-size: 12.5px; margin-bottom: 2px; }
+  .step-content p { color: #6e6b7b; font-size: 12px; margin: 0; }
+
+  /* ── Info / Note box ────────────────────────────────────────── */
+  .note {
+    background: #f0eeff;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--dark);
+    margin: 12px 0;
+  }
+  .note.warning { background: #fff5e6; border-color: var(--warning); }
+  .note.success { background: #e8faf0; border-color: var(--success); }
+  .note.info    { background: #e0f9fc; border-color: var(--info); }
+  .note.danger  { background: #feeaea; border-color: var(--danger); }
+  .note strong  { color: inherit; }
+
+  /* ── UI Mock styles ─────────────────────────────────────────── */
+  .ui-mock {
+    background: var(--body-bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin: 14px 0;
+    font-size: 12px;
+  }
+  .ui-mock .mock-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; color: var(--text-muted);
+    margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+  }
+  .ui-mock .mock-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* Card */
+  .mc {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .mc-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 600; font-size: 13px;
+  }
+  .mc-body { padding: 14px 16px; }
+
+  /* Modal */
+  .mock-modal {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(75,70,92,.18);
+    overflow: hidden;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .mock-modal-header {
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mock-modal-header h6 { font-size: 14px; font-weight: 700; margin: 0; }
+  .mock-close {
+    width: 22px; height: 22px;
+    background: #f0eeff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--secondary); cursor: pointer;
+  }
+  .mock-modal-body { padding: 16px 18px; }
+  .mock-modal-footer {
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end;
+    align-items: center;
+  }
+
+  /* Form elements */
+  .mock-label { font-size: 11.5px; font-weight: 600; margin-bottom: 5px; display: block; color: var(--dark); }
+  .mock-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--dark);
+    background: #fff;
+    margin-bottom: 12px;
+  }
+  .mock-input.filled { border-color: var(--primary); background: #faf9ff; }
+  .mock-textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--dark);
+    background: #fff;
+    resize: none;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+  .mock-textarea.filled { border-color: var(--primary); background: #faf9ff; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 12px; font-weight: 600;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+  }
+  .btn-primary   { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-success   { background: var(--success); color: #fff; border-color: var(--success); }
+  .btn-warning   { background: var(--warning); color: #fff; border-color: var(--warning); }
+  .btn-danger    { background: var(--danger);  color: #fff; border-color: var(--danger); }
+  .btn-info      { background: var(--info);    color: #fff; border-color: var(--info); }
+  .btn-secondary { background: #f0eeff; color: var(--primary); border-color: #e7e5f5; }
+  .btn-outline-primary { background: transparent; color: var(--primary); border-color: var(--primary); }
+  .btn-outline-warning { background: transparent; color: var(--warning); border-color: var(--warning); }
+  .btn-outline-success { background: transparent; color: var(--success); border-color: var(--success); }
+  .btn-outline-info    { background: transparent; color: var(--info);    border-color: var(--info); }
+  .btn-label-secondary { background: #f0eeff; color: var(--secondary); border-color: #e7e5f5; }
+  .btn-label-danger    { background: #feeaea; color: var(--danger);    border-color: #fbd5d5; }
+  .btn-lg { padding: 10px 20px; font-size: 13px; border-radius: 8px; }
+  .btn-w100 { width: 100%; justify-content: center; }
+  .btn-sm { padding: 4px 10px; font-size: 11px; }
+  .btn-disabled { opacity: .5; cursor: not-allowed; }
+
+  /* Badge */
+  .badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10.5px; font-weight: 700;
+  }
+  .badge-primary   { background: #f0eeff; color: var(--primary); }
+  .badge-success   { background: #e8faf0; color: #1e8c4e; }
+  .badge-warning   { background: #fff5e6; color: #c47900; }
+  .badge-danger    { background: #feeaea; color: #c72323; }
+  .badge-info      { background: #e0f9fc; color: #007c8a; }
+  .badge-secondary { background: #f2f2f3; color: var(--secondary); }
+  .badge-teal      { background: #e0f9fc; color: #008a96; }
+
+  /* Alert */
+  .alert {
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex; align-items: flex-start; gap: 8px;
+    margin: 8px 0;
+  }
+  .alert-primary   { background: #f0eeff; color: var(--primary); border: 1px solid #ddd9fe; }
+  .alert-warning   { background: #fff5e6; color: #c47900; border: 1px solid #ffe0a8; }
+  .alert-success   { background: #e8faf0; color: #1e8c4e; border: 1px solid #b5eacc; }
+  .alert-info      { background: #e0f9fc; color: #007c8a; border: 1px solid #9ef4fc; }
+  .alert-danger    { background: #feeaea; color: #c72323; border: 1px solid #f9b6b6; }
+  .alert-secondary { background: #f2f2f3; color: var(--secondary); border: 1px solid #e0e0e1; }
+
+  /* Calendar event pills */
+  .cal-event {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 11px; font-weight: 600;
+    margin-bottom: 4px;
+    gap: 5px;
+  }
+  .cal-event-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Calendar grid mock */
+  .cal-grid {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 11px;
+  }
+  .cal-header {
+    display: grid; grid-template-columns: 48px repeat(7, 1fr);
+    background: #faf9ff;
+    border-bottom: 1px solid var(--border);
+  }
+  .cal-header-cell {
+    padding: 6px 4px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 10px;
+    color: var(--dark);
+    border-right: 1px solid var(--border);
+  }
+  .cal-header-cell:last-child { border-right: none; }
+  .cal-header-cell .date-num { font-size: 14px; display: block; }
+  .cal-header-cell.today { color: var(--primary); }
+  .cal-header-cell.today .date-num {
+    background: var(--primary); color: #fff;
+    border-radius: 50%; width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 1px auto 0;
+  }
+  .cal-body { }
+  .cal-row {
+    display: grid; grid-template-columns: 48px repeat(7, 1fr);
+    border-bottom: 1px solid #f5f4f7;
+    min-height: 36px;
+  }
+  .cal-row:last-child { border-bottom: none; }
+  .cal-time {
+    padding: 4px 6px 0 6px;
+    font-size: 10px; color: var(--text-muted);
+    border-right: 1px solid var(--border);
+    text-align: right;
+  }
+  .cal-cell {
+    border-right: 1px solid #f5f4f7;
+    padding: 2px 3px;
+    position: relative;
+  }
+  .cal-cell:last-child { border-right: none; }
+
+  /* Sidebar mockup */
+  .mock-sidebar {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    width: 180px;
+  }
+
+  /* Layout row */
+  .flex-row { display: flex; gap: 12px; }
+  .flex-1 { flex: 1; min-width: 0; }
+  .flex-row-center { display: flex; gap: 8px; align-items: center; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+  /* Stamp card */
+  .stamp-card {
+    background: #fff;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 16px rgba(115,103,240,.18);
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .stamp-card .avatar-ring {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: #f0eeff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 12px;
+  }
+  .stamp-card h4 { font-size: 16px; font-weight: 700; color: var(--danger); margin-bottom: 4px; }
+  .stamp-card .time-range { font-size: 15px; font-weight: 700; margin: 4px 0; color: var(--dark); }
+  .stamp-card .caption-text { color: var(--text-muted); font-size: 12px; margin-bottom: 14px; }
+
+  /* Exit card */
+  .exit-card {
+    background: #fff;
+    border: 2px solid var(--info);
+    border-radius: 12px;
+    padding: 16px;
+    max-width: 360px;
+  }
+  .exit-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .exit-card-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #e0f9fc;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .exit-card .exit-info-row { font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px; }
+  .exit-card .exit-actions { display: flex; gap: 8px; }
+
+  /* Logbook entry card */
+  .logbook-entry {
+    background: #faf9ff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .logbook-entry .entry-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 6px;
+  }
+  .logbook-entry .entry-time { font-size: 10.5px; color: var(--text-muted); }
+  .logbook-entry .entry-body { font-size: 12px; color: var(--dark); line-height: 1.5; }
+  .icon-trash {
+    width: 20px; height: 20px;
+    background: #feeaea;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--danger); cursor: pointer;
+  }
+
+  /* Toast */
+  .mock-toast {
+    background: var(--success);
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    display: flex; align-items: center; gap: 8px;
+    max-width: 280px;
+    box-shadow: 0 4px 14px rgba(40,199,111,.3);
+  }
+  .mock-toast.warning { background: var(--warning); box-shadow: 0 4px 14px rgba(255,159,67,.3); }
+
+  /* Detail row */
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; margin-bottom: 12px; }
+  .detail-item small { display: block; font-size: 10.5px; color: var(--text-muted); margin-bottom: 2px; }
+  .detail-item strong { font-size: 12.5px; }
+
+  /* Upcoming shift row */
+  .shift-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f4f7;
+  }
+  .shift-row:last-child { border-bottom: none; }
+  .shift-day-pill {
+    background: #feeaea; color: var(--danger);
+    border-radius: 6px; padding: 3px 8px;
+    font-size: 10px; font-weight: 700;
+    text-align: center; min-width: 52px;
+  }
+  .shift-day-pill.tomorrow { background: #fff5e6; color: var(--warning); }
+  .shift-day-pill.future   { background: #f2f2f3; color: var(--secondary); }
+
+  /* Progress */
+  .progress-bar-wrap {
+    background: #f0eeff;
+    border-radius: 4px;
+    height: 8px;
+    overflow: hidden;
+    margin: 4px 0 8px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 4px;
+  }
+
+  /* Separator / HR */
+  hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+  .hr-section { border-color: #e8e6ff; border-width: 2px; margin: 36px 0; }
+
+  /* Tooltip-like marker */
+  .callout {
+    position: relative;
+    display: inline-block;
+  }
+  .callout-arrow {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11.5px; color: var(--primary); font-style: italic; margin-top: 5px;
+  }
+  .callout-arrow::before { content: '▶'; font-size: 9px; }
+
+  /* Number badge inline */
+  .num-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px;
+    background: var(--primary); color: #fff;
+    border-radius: 50%; font-size: 10px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* Icon placeholder (emoji fallback) */
+  .icon { font-style: normal; }
+
+  /* Annotation overlay arrows */
+  .annotated { position: relative; }
+  .annotation {
+    font-size: 11px; color: var(--primary); font-style: italic;
+    margin-top: 6px; padding-left: 10px;
+    border-left: 2px solid var(--primary);
+  }
+
+  /* Page layout */
+  .page { padding: 40px 48px; max-width: 800px; margin: 0 auto; }
+  @media screen { .page { margin-bottom: 40px; border-bottom: 3px solid #f0eeff; } }
+
+  /* Flow diagram */
+  .flow {
+    display: flex; align-items: center; gap: 0;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .flow-step {
+    background: #f0eeff;
+    border: 1.5px solid #ddd9fe;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 11.5px; font-weight: 600;
+    text-align: center;
+    color: var(--primary);
+  }
+  .flow-arrow { font-size: 16px; color: var(--text-muted); margin: 0 4px; }
+
+  /* Status legend */
+  .status-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+
+  /* Two-column layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media print { .two-col { grid-template-columns: 1fr 1fr; } }
+
+  /* Small helper text */
+  .text-muted { color: var(--text-muted); }
+  .text-small { font-size: 11px; }
+  .mt-8  { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-8  { margin-bottom: 8px; }
+  .mb-12 { margin-bottom: 12px; }
+  .fw-bold { font-weight: 700; }
+  .text-primary { color: var(--primary); }
+  .text-success { color: var(--success); }
+  .text-danger  { color: var(--danger); }
+  .text-warning { color: var(--warning); }
+
+  /* Dashed border (rescheduling) */
+  .dashed-border { border-style: dashed !important; opacity: .9; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     COVER
+════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-logo">📋</div>
+  <div class="app-name">Log Mieru · Internship Monitoring App</div>
+  <h1>Panduan Penggunaan<br>Aplikasi</h1>
+  <p class="subtitle">Khusus untuk <strong>Intern Staff</strong></p>
+  <div class="cover-divider"></div>
+  <p style="font-size:13px;opacity:.8;max-width:340px;line-height:1.7">
+    Dokumen ini menjelaskan cara membuat jadwal, melakukan stamp kehadiran,
+    mengisi logbook, dan mengajukan reschedule — lengkap dengan tampilan
+    antarmuka nyata dari aplikasi.
+  </p>
+  <div class="cover-meta mt-12">
+    Diterbitkan: Maret 2026 &nbsp;·&nbsp; Versi 1.0
+    <br>
+    <div class="cover-badge">Bahasa Indonesia</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     DAFTAR ISI
+════════════════════════════════════════════════════════ -->
+<div class="page toc-page">
+  <h2>Daftar Isi</h2>
+  <ul class="toc-list">
+    <li>
+      <div class="toc-chapter">
+        <div class="toc-num">1</div>
+        <div>
+          <div class="toc-title">📅 Membuat Schedule (Jadwal)</div>
+          <div class="toc-sub">Cara mengajukan jadwal kerja baru untuk disetujui admin</div>
+        </div>
+      </div>
+      <div class="toc-page-num">Hal. 3</div>
+    </li>
+    <li>
+      <div class="toc-chapter">
+        <div class="toc-num" style="background:#28c76f">2</div>
+        <div>
+          <div class="toc-title">🟢 Entry Stamp (Absen Masuk)</div>
+          <div class="toc-sub">Cara melakukan tap masuk saat memulai shift</div>
+        </div>
+      </div>
+      <div class="toc-page-num">Hal. 5</div>
+    </li>
+    <li>
+      <div class="toc-chapter">
+        <div class="toc-num" style="background:#00cfe8">3</div>
+        <div>
+          <div class="toc-title">🔵 Exit Stamp (Absen Keluar)</div>
+          <div class="toc-sub">Cara melakukan tap keluar setelah shift selesai</div>
+        </div>
+      </div>
+      <div class="toc-page-num">Hal. 7</div>
+    </li>
+    <li>
+      <div class="toc-chapter">
+        <div class="toc-num" style="background:#ff9f43">4</div>
+        <div>
+          <div class="toc-title">📓 Mengisi Logbook</div>
+          <div class="toc-sub">Cara mencatat aktivitas kerja selama shift berlangsung</div>
+        </div>
+      </div>
+      <div class="toc-page-num">Hal. 9</div>
+    </li>
+    <li>
+      <div class="toc-chapter">
+        <div class="toc-num" style="background:#ea5455">5</div>
+        <div>
+          <div class="toc-title">🔄 Reschedule (Ubah Jadwal)</div>
+          <div class="toc-sub">Cara mengajukan permintaan perubahan jadwal yang sudah disetujui</div>
+        </div>
+      </div>
+      <div class="toc-page-num">Hal. 11</div>
+    </li>
+    <li>
+      <div class="toc-chapter">
+        <div class="toc-num" style="background:#82868b">6</div>
+        <div>
+          <div class="toc-title">ℹ️ Referensi Status &amp; Warna</div>
+          <div class="toc-sub">Arti dari setiap badge dan warna di kalender</div>
+        </div>
+      </div>
+      <div class="toc-page-num">Hal. 13</div>
+    </li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BAB 1: MEMBUAT SCHEDULE
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:#f0eeff;">📅</div>
+    <div>
+      <div class="chapter-num">Bab 1</div>
+      <h2>Membuat Schedule (Jadwal)</h2>
+      <p>Cara mengajukan jadwal kerja baru yang akan diproses oleh admin</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Langkah-langkah</div>
+    <ul class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Buka halaman Schedule</strong>
+          <p>Klik menu <b>Schedules</b> pada navigasi sidebar, atau klik tombol <b>View Schedule</b> di dashboard.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Klik tombol "Add Schedule"</strong>
+          <p>Tombol berwarna ungu di bagian atas sidebar kiri kalender.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Isi form yang muncul</strong>
+          <p>Pilih tanggal &amp; waktu mulai (Start Date &amp; Time), waktu selesai (End Date &amp; Time), dan tambahkan keterangan singkat (Caption).</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Klik "Save"</strong>
+          <p>Jadwal akan langsung muncul di kalender dengan status <span class="badge badge-warning">Pending</span> — menunggu persetujuan admin.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="note info">
+      💡 <strong>Catatan:</strong> Jadwal yang baru dibuat oleh intern akan masuk ke antrian approval admin terlebih dahulu. Kamu tidak bisa melakukan stamp kehadiran sebelum jadwal disetujui.
+    </div>
+  </div>
+
+  <!-- UI Mock: Schedule Page + Sidebar -->
+  <div class="ui-mock no-break">
+    <div class="mock-label">📍 Tampilan Halaman Schedule — Sidebar Kiri &amp; Kalender</div>
+    <div class="flex-row" style="gap:10px;">
+      <!-- Sidebar -->
+      <div class="mock-sidebar" style="flex-shrink:0;">
+        <button class="btn btn-primary btn-w100 mb-12" style="font-size:12px;">
+          ＋ Add Schedule
+        </button>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Weekly Hours</div>
+        <div class="flex-between mb-8" style="font-size:11px;">
+          <span>14 hrs used</span>
+          <span>40 hrs max</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:35%"></div>
+        </div>
+        <div style="font-size:10.5px;color:var(--text-muted);">26 hrs remaining</div>
+        <hr style="margin:10px 0;">
+        <div style="font-weight:700;font-size:12px;margin-bottom:8px;">Filter</div>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+          <input type="checkbox" checked style="accent-color:var(--primary)"> View All Interns
+        </label>
+        <div style="font-size:11px;font-weight:600;margin-bottom:6px;">Status</div>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:5px;"><input type="checkbox" checked style="accent-color:var(--primary)"> Not Yet</label>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:5px;"><input type="checkbox" checked style="accent-color:var(--warning)"> Ongoing</label>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:5px;"><input type="checkbox" checked style="accent-color:var(--success)"> Done</label>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:5px;"><input type="checkbox" checked style="accent-color:var(--danger)"> Late</label>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;"><input type="checkbox" checked style="accent-color:var(--secondary)"> Absence</label>
+      </div>
+
+      <!-- Calendar preview -->
+      <div class="flex-1">
+        <div class="cal-grid">
+          <div class="cal-header">
+            <div class="cal-header-cell" style="font-size:9px;color:var(--text-muted);">SGT</div>
+            <div class="cal-header-cell">Mon<span class="date-num">2</span></div>
+            <div class="cal-header-cell today">Tue<span class="date-num">3</span></div>
+            <div class="cal-header-cell">Wed<span class="date-num">4</span></div>
+            <div class="cal-header-cell">Thu<span class="date-num">5</span></div>
+            <div class="cal-header-cell">Fri<span class="date-num">6</span></div>
+            <div class="cal-header-cell">Sat<span class="date-num">7</span></div>
+            <div class="cal-header-cell">Sun<span class="date-num">8</span></div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-time">08:00</div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell">
+              <div class="cal-event" style="background:#28c76f;color:#fff;border-radius:4px;font-size:10px;padding:3px 5px;">Budi — dev work ✓</div>
+            </div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell">
+              <div class="cal-event" style="background:#ff9f4333;color:#ff9f43;border:1.5px solid #ff9f43;border-radius:4px;font-size:10px;padding:3px 5px;">Budi — rapat</div>
+            </div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-time">10:00</div>
+            <div class="cal-cell">
+              <div class="cal-event" style="background:#7367f0;color:#fff;border-radius:4px;font-size:10px;padding:3px 5px;">Budi — UI design</div>
+            </div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+          </div>
+          <div class="cal-row">
+            <div class="cal-time">13:00</div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell">
+              <div class="cal-event" style="background:#7367f0;color:#fff;border-radius:4px;font-size:10px;padding:3px 5px;">Budi — testing</div>
+            </div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+            <div class="cal-cell"></div>
+          </div>
+        </div>
+        <div class="annotation">← Klik pada area kosong di kalender atau gunakan tombol "Add Schedule" untuk menambah jadwal baru</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Mock: Modal -->
+  <div class="ui-mock no-break mt-16">
+    <div class="mock-label">📍 Form Tambah Jadwal (modal yang muncul setelah klik Add Schedule)</div>
+    <div class="mock-modal">
+      <div class="mock-modal-header">
+        <h6>Add Schedule</h6>
+        <div class="mock-close">✕</div>
+      </div>
+      <div class="mock-modal-body">
+        <label class="mock-label">Start Date &amp; Time</label>
+        <div class="mock-input filled" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>2026-03-10 09:00</span>
+          <span style="color:var(--text-muted);font-size:11px;">📅</span>
+        </div>
+        <label class="mock-label">End Date &amp; Time</label>
+        <div class="mock-input filled" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>2026-03-10 13:00</span>
+          <span style="color:var(--text-muted);font-size:11px;">📅</span>
+        </div>
+        <label class="mock-label">Caption</label>
+        <div class="mock-input filled">Front-end development sprint</div>
+        <div class="alert alert-info" style="margin-top:0;">
+          ℹ️ This schedule is 4.00 hours.
+        </div>
+      </div>
+      <div class="mock-modal-footer">
+        <button class="btn btn-label-secondary">Cancel</button>
+        <button class="btn btn-primary">💾 Save</button>
+      </div>
+    </div>
+    <div class="annotation">← Setelah klik Save, jadwal langsung tampil di kalender dengan border oranye (pending approval admin)</div>
+  </div>
+
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Jadwal berhasil dibuat — tampil di kalender sebagai "Pending"</div>
+    <div class="flex-row-center" style="gap:12px;flex-wrap:wrap;">
+      <div style="background:#ff9f4333;color:#ff9f43;border:1.5px solid #ff9f43;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:600;min-width:160px;">
+        Budi — Front-end dev…
+        <div style="font-size:10px;opacity:.8;">09:00 – 13:00</div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);">→ tampil dengan outline oranye = menunggu approval</div>
+    </div>
+    <div class="mt-8">
+      <span class="badge badge-warning">⏳ Pending Approval</span>
+      &nbsp;setelah admin menyetujui → tampilan berubah menjadi:&nbsp;
+      <span class="badge badge-primary">Not Yet</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BAB 2: ENTRY STAMP
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:#e8faf0;">🟢</div>
+    <div>
+      <div class="chapter-num">Bab 2</div>
+      <h2>Entry Stamp (Absen Masuk)</h2>
+      <p>Cara menandai kehadiran saat memulai shift yang sudah disetujui</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Langkah-langkah</div>
+    <ul class="steps">
+      <li>
+        <div class="step-num" style="background:var(--success)">1</div>
+        <div class="step-content">
+          <strong>Buka halaman Dashboard</strong>
+          <p>Halaman utama setelah login. Aplikasi akan otomatis menampilkan kartu pengingat ketika jadwal kamu mendekati waktu mulai.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--success)">2</div>
+        <div class="step-content">
+          <strong>Lihat kartu pengingat kehadiran</strong>
+          <p>Kartu akan muncul di bagian atas halaman dengan tombol <b>Stamp Entry</b>. Warna kartu berubah sesuai urgensi: <span style="color:var(--primary)">biru</span> (jadwal masih lama), <span style="color:var(--warning)">kuning</span> (&lt;15 menit), <span style="color:var(--danger)">merah</span> (sudah dimulai).</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--success)">3</div>
+        <div class="step-content">
+          <strong>Klik tombol "Stamp Entry"</strong>
+          <p>Tekan tombol besar di bagian bawah kartu. Konfirmasi absen masuk akan langsung diproses.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--success)">4</div>
+        <div class="step-content">
+          <strong>Status jadwal berubah menjadi "Ongoing"</strong>
+          <p>Kartu pengingat menghilang, dan event di kalender berubah warna menjadi <span style="color:var(--warning)">oranye</span> (sedang berlangsung). Kamu sudah tercatat hadir.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="note warning">
+      ⚠️ <strong>Penting:</strong> Entry stamp hanya bisa dilakukan pada jadwal yang sudah berstatus <span class="badge badge-primary">Approved</span>. Jadwal yang masih <span class="badge badge-warning">Pending</span> atau <span class="badge badge-danger">Rejected</span> tidak dapat distamp.
+    </div>
+  </div>
+
+  <!-- UI Mock: Entry Card -->
+  <div class="ui-mock no-break">
+    <div class="mock-label">📍 Kartu Pengingat Entry Stamp — muncul di bagian atas Dashboard</div>
+
+    <div class="two-col" style="gap:14px;align-items:start;">
+      <!-- Urgent card -->
+      <div>
+        <div style="font-size:11px;color:var(--danger);font-weight:600;margin-bottom:6px;">🔴 Skenario: Shift sudah dimulai (terlambat absen)</div>
+        <div style="background:#fff;border:2px solid var(--danger);border-radius:12px;padding:18px;text-align:center;box-shadow:0 0 16px rgba(234,84,85,.15);">
+          <div style="width:54px;height:54px;border-radius:50%;background:#feeaea;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;">🔔</div>
+          <div style="font-size:15px;font-weight:700;color:var(--danger);margin-bottom:4px;">Started 12 minutes ago</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:3px;">09:00 - 13:00</div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:14px;">Front-end development sprint</div>
+          <button class="btn btn-danger btn-w100 btn-lg">
+            👆 Stamp Entry
+          </button>
+        </div>
+      </div>
+
+      <!-- Warning card -->
+      <div>
+        <div style="font-size:11px;color:var(--warning);font-weight:600;margin-bottom:6px;">🟡 Skenario: 15 menit lagi shift dimulai</div>
+        <div style="background:#fff;border:2px solid var(--warning);border-radius:12px;padding:18px;text-align:center;box-shadow:0 0 16px rgba(255,159,67,.12);">
+          <div style="width:54px;height:54px;border-radius:50%;background:#fff5e6;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;">🔔</div>
+          <div style="font-size:15px;font-weight:700;color:var(--warning);margin-bottom:4px;">Starts in 15 minutes</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:3px;">13:00 - 17:00</div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:14px;">Backend API testing</div>
+          <button class="btn btn-warning btn-w100 btn-lg">
+            👆 Stamp Entry
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Mock: Toast sukses -->
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Notifikasi berhasil — muncul di pojok kanan atas setelah stamp</div>
+    <div style="display:flex;justify-content:flex-end;">
+      <div class="mock-toast">
+        ✅ <span>Entry stamped successfully. Status: Ongoing</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Mock: Before/After -->
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Perubahan event di kalender sebelum &amp; sesudah Entry Stamp</div>
+    <div class="flex-row" style="gap:20px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">Sebelum (Approved, belum entry)</div>
+        <div style="background:#7367f0;color:#fff;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:600;display:inline-block;">
+          Budi — dev work 📌<br><small style="font-weight:400;opacity:.8;">09:00 – 13:00</small>
+        </div>
+        <div class="mt-8"><span class="badge badge-secondary">Entry ✕</span></div>
+      </div>
+      <div style="font-size:20px;color:var(--text-muted);">→</div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--warning);margin-bottom:6px;">Sesudah (Ongoing)</div>
+        <div style="background:#ff9f43;color:#fff;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:600;display:inline-block;">
+          Budi — dev work 📌<br><small style="font-weight:400;opacity:.8;">09:00 – 13:00</small>
+        </div>
+        <div class="mt-8"><span class="badge badge-success">Entry ✓</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BAB 3: EXIT STAMP
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:#e0f9fc;">🔵</div>
+    <div>
+      <div class="chapter-num">Bab 3</div>
+      <h2>Exit Stamp (Absen Keluar)</h2>
+      <p>Cara menandai selesainya shift kerja yang sedang berlangsung</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Langkah-langkah</div>
+    <ul class="steps">
+      <li>
+        <div class="step-num" style="background:var(--info)">1</div>
+        <div class="step-content">
+          <strong>Buka halaman Dashboard</strong>
+          <p>Setelah Entry Stamp dilakukan, kartu "Active Shift" akan muncul di bagian atas halaman menggantikan kartu Entry Stamp.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--info)">2</div>
+        <div class="step-content">
+          <strong>Tunggu hingga waktu exit minimum terpenuhi</strong>
+          <p>Tombol <b>Stamp Exit</b> hanya aktif setelah waktu minimum shift terlewati. Jika belum waktunya, tombol akan tampil abu-abu dan bertuliskan "Cannot exit yet".</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--info)">3</div>
+        <div class="step-content">
+          <strong>Klik tombol "Stamp Exit"</strong>
+          <p>Tekan tombol hijau <b>Stamp Exit</b> di kartu Active Shift. Exit akan langsung dicatat.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--info)">4</div>
+        <div class="step-content">
+          <strong>Status berubah menjadi "Done" atau "Late"</strong>
+          <p><span class="badge badge-success">Done</span> jika masuk tepat waktu. <span class="badge badge-danger" style="background:#feeaea;color:var(--danger);">Late</span> jika entry stamp dilakukan setelah waktu mulai shift.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="note info">
+      💡 <strong>Tip:</strong> Pada kartu Active Shift juga terdapat tombol <button class="btn btn-outline-info btn-sm" style="padding:2px 8px;font-size:10.5px;">📓 Logbook</button> di sebelah kanan tombol Exit — kamu bisa langsung membuka logbook dari sini tanpa harus menutup shift terlebih dahulu.
+    </div>
+  </div>
+
+  <!-- UI Mock: Exit Card -->
+  <div class="ui-mock no-break">
+    <div class="mock-label">📍 Kartu Active Shift — muncul saat shift sedang berlangsung</div>
+
+    <!-- Can exit scenario -->
+    <div style="font-size:11px;color:var(--success);font-weight:600;margin-bottom:6px;">✅ Skenario: Sudah bisa exit</div>
+    <div class="exit-card" style="max-width:380px;margin-bottom:14px;">
+      <div class="exit-card-header">
+        <div class="exit-card-icon">🕐</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">Active Shift</div>
+          <div style="font-size:11px;color:var(--text-muted);">09:00 - 13:00</div>
+        </div>
+        <span class="badge badge-success">ongoing</span>
+      </div>
+      <div class="exit-card" style="border:none;padding:0;">
+        <div class="exit-info-row">Front-end development sprint</div>
+        <div class="exit-info-row">Earliest exit: <strong>12:30</strong></div>
+        <div class="exit-actions">
+          <button class="btn btn-success flex-1" style="flex:1;justify-content:center;">
+            🚪 Stamp Exit
+          </button>
+          <button class="btn btn-outline-info" style="padding:7px 12px;">
+            📓
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cannot exit yet scenario -->
+    <div style="font-size:11px;color:var(--warning);font-weight:600;margin-bottom:6px;">⏳ Skenario: Belum bisa exit (terlalu dini)</div>
+    <div class="exit-card" style="max-width:380px;">
+      <div class="exit-card-header">
+        <div class="exit-card-icon">🕐</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">Active Shift</div>
+          <div style="font-size:11px;color:var(--text-muted);">13:00 - 17:00</div>
+        </div>
+        <span class="badge badge-warning">ongoing</span>
+      </div>
+      <div class="exit-card" style="border:none;padding:0;">
+        <div class="exit-info-row">Backend API testing</div>
+        <div class="exit-info-row">Earliest exit: <strong>15:30</strong></div>
+        <div class="exit-actions">
+          <button class="btn btn-label-secondary flex-1 btn-disabled" style="flex:1;justify-content:center;opacity:.45;cursor:not-allowed;">
+            🔒 Cannot exit yet
+          </button>
+          <button class="btn btn-outline-info" style="padding:7px 12px;">
+            📓
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Mock: Modal Detail after exit -->
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Detail jadwal setelah Exit Stamp berhasil</div>
+    <div class="mock-modal" style="max-width:380px;">
+      <div class="mock-modal-header">
+        <h6>Schedule Details</h6>
+        <div class="mock-close">✕</div>
+      </div>
+      <div class="mock-modal-body">
+        <div class="flex-between mb-8">
+          <span style="font-weight:700;">Budi Santoso</span>
+          <span class="badge badge-success">Done</span>
+        </div>
+        <div style="color:var(--text-muted);font-size:12px;margin-bottom:12px;">Front-end development sprint</div>
+        <div class="detail-grid">
+          <div class="detail-item"><small>Start</small><strong>10/03/2026, 09:00:00</strong></div>
+          <div class="detail-item"><small>End</small><strong>10/03/2026, 13:00:00</strong></div>
+          <div class="detail-item"><small>Duration</small><strong>4 hours</strong></div>
+        </div>
+        <div class="flex-row-center" style="gap:8px;">
+          <span class="badge badge-success">✓ Entry</span>
+          <span class="badge badge-success">✓ Exit</span>
+        </div>
+        <div class="alert alert-success mt-8">
+          ✅ Shift selesai. Entry dan exit sudah tercatat.
+        </div>
+      </div>
+      <div class="mock-modal-footer">
+        <button class="btn btn-outline-info btn-sm">📓 Logbook</button>
+        <button class="btn btn-label-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BAB 4: LOGBOOK
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:#fff5e6;">📓</div>
+    <div>
+      <div class="chapter-num">Bab 4</div>
+      <h2>Mengisi Logbook</h2>
+      <p>Cara mencatat aktivitas &amp; kegiatan yang dilakukan selama shift berlangsung</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Langkah-langkah</div>
+    <ul class="steps">
+      <li>
+        <div class="step-num" style="background:var(--warning)">1</div>
+        <div class="step-content">
+          <strong>Akses Logbook dari kartu Active Shift (Dashboard)</strong>
+          <p>Klik tombol ikon <b>📓</b> di sebelah tombol Stamp Exit pada kartu Active Shift, <em>atau</em> klik event di kalender → klik tombol <b>Logbook</b> di modal detail.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--warning)">2</div>
+        <div class="step-content">
+          <strong>Modal Logbook terbuka</strong>
+          <p>Bagian atas menampilkan entri logbook sebelumnya (jika ada). Di bawahnya terdapat kolom teks untuk menambahkan entri baru.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--warning)">3</div>
+        <div class="step-content">
+          <strong>Tulis aktivitas yang dikerjakan</strong>
+          <p>Isi kolom "Add Logbook Entry" dengan deskripsi kegiatan. Gunakan bahasa yang jelas dan spesifik, contoh: <em>"Melanjutkan pengembangan fitur halaman profile — selesai komponen avatar dan form edit"</em>.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--warning)">4</div>
+        <div class="step-content">
+          <strong>Klik "Save Entry"</strong>
+          <p>Entri akan langsung tersimpan dan muncul di daftar logbook di atas kolom teks. Kamu bisa menambahkan beberapa entri dalam satu shift.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="note warning">
+      ⚠️ <strong>Syarat:</strong> Tombol Logbook hanya aktif setelah kamu melakukan <b>Entry Stamp</b>. Tanpa entry stamp, tombol logbook tidak akan muncul.
+    </div>
+    <div class="note success">
+      ✅ <strong>Boleh:</strong> Mengisi logbook berkali-kali dalam satu shift, dan bahkan setelah shift selesai (selama entry sudah tercatat).
+    </div>
+  </div>
+
+  <!-- UI Mock: Logbook Modal -->
+  <div class="ui-mock no-break">
+    <div class="mock-label">📍 Modal Logbook — tampilan lengkap</div>
+    <div class="mock-modal" style="max-width:480px;">
+      <div class="mock-modal-header">
+        <h6>📓 Shift Logbook</h6>
+        <div class="mock-close">✕</div>
+      </div>
+      <div class="mock-modal-body">
+        <!-- Existing entries -->
+        <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:8px;">Entri Sebelumnya</div>
+
+        <div class="logbook-entry">
+          <div class="entry-header">
+            <span class="entry-time">10/03/2026, 09:35:42</span>
+            <div class="icon-trash">🗑</div>
+          </div>
+          <div class="entry-body">Mulai sprint pagi, review ticket JIRA dan setup environment lokal untuk fitur baru halaman profile pengguna.</div>
+        </div>
+
+        <div class="logbook-entry">
+          <div class="entry-header">
+            <span class="entry-time">10/03/2026, 11:08:17</span>
+            <div class="icon-trash">🗑</div>
+          </div>
+          <div class="entry-body">Menyelesaikan komponen Avatar Upload — sudah berhasil preview &amp; upload ke server. PR #24 dibuat.</div>
+        </div>
+
+        <hr style="margin:12px 0;">
+
+        <!-- Add new entry -->
+        <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:8px;">Tambah Entri Baru</div>
+        <label class="mock-label">Add Logbook Entry</label>
+        <textarea class="mock-textarea filled" placeholder="What did you work on during this shift?">Melanjutkan form Edit Profile — validasi input email dan username. Testing di browser mobile selesai tanpa error.</textarea>
+        <button class="btn btn-primary">💾 Save Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cara akses dari event detail -->
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Cara membuka Logbook dari detail event kalender</div>
+    <div class="mock-modal" style="max-width:380px;">
+      <div class="mock-modal-header">
+        <h6>Schedule Details</h6>
+        <div class="mock-close">✕</div>
+      </div>
+      <div class="mock-modal-body" style="padding-bottom:8px;">
+        <div class="flex-between mb-8">
+          <span style="font-weight:700;">Budi Santoso</span>
+          <span class="badge" style="background:#fff5e6;color:#c47900;">Ongoing</span>
+        </div>
+        <div style="color:var(--text-muted);font-size:12px;margin-bottom:10px;">Front-end development sprint</div>
+        <div class="detail-grid">
+          <div class="detail-item"><small>Start</small><strong>09:00:00</strong></div>
+          <div class="detail-item"><small>End</small><strong>13:00:00</strong></div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="badge badge-success">✓ Entry</span>
+          <span class="badge badge-secondary">✕ Exit</span>
+        </div>
+        <div class="alert alert-warning mt-8" style="margin-bottom:0;">
+          🕐 In progress — ends in 1h 24m
+        </div>
+      </div>
+      <div class="mock-modal-footer">
+        <button class="btn btn-outline-warning btn-sm">🔄 Request Reschedule</button>
+        <button class="btn btn-outline-info btn-sm" style="background:#e0f9fc;">📓 Logbook</button>
+        <button class="btn btn-label-secondary btn-sm">Close</button>
+      </div>
+    </div>
+    <div class="annotation">← Klik tombol "Logbook" di footer modal untuk membuka form logbook</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BAB 5: RESCHEDULE
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:#feeaea;">🔄</div>
+    <div>
+      <div class="chapter-num">Bab 5</div>
+      <h2>Reschedule (Ubah Jadwal)</h2>
+      <p>Cara mengajukan permintaan perubahan waktu jadwal yang sudah disetujui admin</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Kapan bisa Reschedule?</div>
+    <div class="note danger">
+      🔄 Reschedule hanya berlaku untuk jadwal yang sudah berstatus <span class="badge badge-primary">Approved</span> dan belum selesai / tidak hadir (<b>bukan</b> <span class="badge badge-success">Done</span> atau <span class="badge badge-secondary">Absence</span>). Jadwal yang masih Pending bisa langsung diedit biasa tanpa perlu reschedule.
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Langkah-langkah</div>
+    <ul class="steps">
+      <li>
+        <div class="step-num" style="background:var(--danger)">1</div>
+        <div class="step-content">
+          <strong>Klik event di kalender</strong>
+          <p>Buka halaman Schedule, lalu klik pada event jadwal yang ingin diubah. Modal detail jadwal akan terbuka.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--danger)">2</div>
+        <div class="step-content">
+          <strong>Klik "Request Reschedule"</strong>
+          <p>Di bagian bawah modal (footer), terdapat tombol kuning <b>🔄 Request Reschedule</b>. Klik tombol tersebut.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--danger)">3</div>
+        <div class="step-content">
+          <strong>Isi waktu dan keterangan baru</strong>
+          <p>Form yang terbuka meminta waktu mulai baru, waktu selesai baru, dan caption (keterangan) baru. Isi sesuai kebutuhan.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--danger)">4</div>
+        <div class="step-content">
+          <strong>Klik "Submit Request"</strong>
+          <p>Permintaan reschedule dikirim ke admin. Jadwal asli tetap aktif dan tampil di kalender hingga admin memproses permintaan.</p>
+        </div>
+      </li>
+      <li>
+        <div class="step-num" style="background:var(--danger)">5</div>
+        <div class="step-content">
+          <strong>Tunggu persetujuan admin</strong>
+          <p>Event di kalender akan menampilkan ikon 🔄 dan border putus-putus (dashed) sebagai tanda permintaan sedang menunggu review admin.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- UI Mock: Event detail + reschedule button -->
+  <div class="ui-mock no-break">
+    <div class="mock-label">📍 Langkah 1–2: Klik event → modal detail → klik Request Reschedule</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;justify-content:center;">
+      <!-- Calendar with event -->
+      <div style="flex-shrink:0;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">Klik event di kalender</div>
+        <div style="background:#7367f0;color:#fff;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:600;width:140px;cursor:pointer;box-shadow:0 3px 8px rgba(115,103,240,.35);">
+          Budi — API dev<br>
+          <small style="font-weight:400;opacity:.8;">Selasa, 10 Mar 09:00</small>
+        </div>
+      </div>
+      <div style="font-size:18px;color:var(--text-muted);margin-top:20px;">→</div>
+      <!-- Modal -->
+      <div class="mock-modal" style="max-width:340px;flex-shrink:0;">
+        <div class="mock-modal-header">
+          <h6>Schedule Details</h6>
+          <div class="mock-close">✕</div>
+        </div>
+        <div class="mock-modal-body" style="padding-bottom:6px;">
+          <div class="flex-between mb-8">
+            <span style="font-weight:700;font-size:13px;">Budi Santoso</span>
+            <span class="badge badge-primary">Not Yet</span>
+          </div>
+          <div style="color:var(--text-muted);font-size:11.5px;margin-bottom:10px;">API endpoint development</div>
+          <div class="detail-grid" style="grid-template-columns:1fr 1fr;">
+            <div class="detail-item"><small>Start</small><strong>10/03, 09:00</strong></div>
+            <div class="detail-item"><small>End</small><strong>10/03, 13:00</strong></div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <span class="badge badge-secondary">✕ Entry</span>
+            <span class="badge badge-secondary">✕ Exit</span>
+          </div>
+          <div class="alert alert-primary mt-8" style="margin-bottom:0;">
+            ⏳ Starts in 2h 15m
+          </div>
+        </div>
+        <div class="mock-modal-footer" style="background:#fafafa;">
+          <button class="btn btn-outline-warning" style="font-size:11.5px;background:#fff8ec;color:var(--warning);border-color:var(--warning);">
+            🔄 Request Reschedule
+          </button>
+          <button class="btn btn-label-secondary btn-sm">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Mock: Reschedule form -->
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Langkah 3–4: Form Reschedule — isi waktu baru &amp; submit</div>
+    <div class="mock-modal" style="max-width:420px;">
+      <div class="mock-modal-header">
+        <h6>🔄 Request Reschedule</h6>
+        <div class="mock-close">✕</div>
+      </div>
+      <div class="mock-modal-body">
+        <label class="mock-label">Start Date &amp; Time (Baru)</label>
+        <div class="mock-input filled" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>2026-03-12 09:00</span><span style="color:var(--text-muted);">📅</span>
+        </div>
+        <label class="mock-label">End Date &amp; Time (Baru)</label>
+        <div class="mock-input filled" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>2026-03-12 13:00</span><span style="color:var(--text-muted);">📅</span>
+        </div>
+        <label class="mock-label">Caption (Keterangan)</label>
+        <div class="mock-input filled">API endpoint development — dipindah ke Kamis</div>
+        <div class="alert alert-info">
+          ℹ️ This schedule is 4.00 hours.
+        </div>
+      </div>
+      <div class="mock-modal-footer">
+        <button class="btn btn-label-danger btn-sm">🗑 Delete</button>
+        <button class="btn btn-label-secondary">Cancel</button>
+        <button class="btn btn-warning" style="color:#fff;">🔄 Submit Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI Mock: Kalender setelah reschedule pending -->
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Langkah 5: Event di kalender setelah reschedule dikirim (menunggu admin)</div>
+    <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">Tampilan event di kalender:</div>
+        <div style="background:#7367f033;color:#7367f0;border:2px dashed #7367f0;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:600;width:180px;opacity:.9;">
+          Budi — API dev 🔄<br>
+          <small style="font-weight:400;opacity:.8;">Selasa, 10 Mar 09:00</small>
+        </div>
+        <div class="annotation">← Border putus-putus + ikon 🔄 = reschedule pending</div>
+      </div>
+      <div style="flex:1;min-width:180px;">
+        <div class="alert alert-info" style="margin-top:16px;">
+          🔄 <strong>Reschedule Pending</strong><br>
+          Proposed: 12/03/2026, 09:00 – 13:00<br>
+          <small style="color:var(--text-muted);">API endpoint development — dipindah ke Kamis</small>
+        </div>
+        <div class="note" style="margin-top:8px;">
+          📌 Jadwal <b>asli</b> tetap aktif dan tampil di kalender hingga admin memproses permintaan. Jika disetujui, waktu jadwal otomatis berubah ke waktu baru. Jika ditolak, jadwal kembali normal tanpa perubahan.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flow diagram -->
+  <div class="ui-mock no-break mt-12">
+    <div class="mock-label">📍 Alur lengkap proses Reschedule</div>
+    <div class="flow" style="justify-content:center;">
+      <div class="flow-step">Intern klik<br>Request Reschedule</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step" style="background:#fff5e6;border-color:#ffe0a8;color:#c47900;">Admin<br>Review</div>
+      <div class="flow-arrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="flow-step" style="background:#e8faf0;border-color:#b5eacc;color:#1e8c4e;">✅ Disetujui<br><small>Waktu berubah ke baru</small></div>
+        <div class="flow-step" style="background:#feeaea;border-color:#f9b6b6;color:#c72323;">❌ Ditolak<br><small>Jadwal asli tetap</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BAB 6: REFERENSI STATUS & WARNA
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="chapter-header">
+    <div class="chapter-icon" style="background:#f2f2f3;">ℹ️</div>
+    <div>
+      <div class="chapter-num">Bab 6</div>
+      <h2>Referensi Status &amp; Warna</h2>
+      <p>Arti dari setiap warna event, badge, dan status yang tampil di aplikasi</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Status Jadwal (schedule status)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" class="no-break">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;">
+        <div style="width:40px;height:40px;border-radius:8px;background:#f0eeff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📅</div>
+        <div>
+          <span class="badge badge-primary" style="margin-bottom:4px;">Not Yet</span>
+          <div style="font-size:11.5px;color:var(--text-muted);">Jadwal disetujui, shift belum dimulai. Belum ada entry stamp.</div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;">
+        <div style="width:40px;height:40px;border-radius:8px;background:#fff5e6;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
+        <div>
+          <span class="badge badge-warning" style="margin-bottom:4px;">Ongoing</span>
+          <div style="font-size:11.5px;color:var(--text-muted);">Shift sedang berlangsung. Entry stamp sudah dilakukan, exit belum.</div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;">
+        <div style="width:40px;height:40px;border-radius:8px;background:#e8faf0;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">✅</div>
+        <div>
+          <span class="badge badge-success" style="margin-bottom:4px;">Done</span>
+          <div style="font-size:11.5px;color:var(--text-muted);">Shift selesai dengan baik. Entry dan exit sudah tercatat.</div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;">
+        <div style="width:40px;height:40px;border-radius:8px;background:#feeaea;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⏰</div>
+        <div>
+          <span class="badge badge-danger" style="background:#feeaea;color:var(--danger);margin-bottom:4px;">Late</span>
+          <div style="font-size:11.5px;color:var(--text-muted);">Shift selesai tetapi entry stamp dilakukan setelah waktu mulai yang ditentukan.</div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;grid-column:span 2;">
+        <div style="width:40px;height:40px;border-radius:8px;background:#f2f2f3;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🚫</div>
+        <div>
+          <span class="badge badge-secondary" style="margin-bottom:4px;">Absence</span>
+          <div style="font-size:11.5px;color:var(--text-muted);">Tidak hadir. Jadwal sudah melewati waktunya tanpa ada entry stamp.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section mt-16">
+    <div class="section-title">Status Persetujuan (approval status)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" class="no-break">
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+        <div style="background:#ff9f4333;border:1.5px solid #ff9f43;border-radius:6px;padding:5px 8px;font-size:11.5px;font-weight:600;color:#ff9f43;margin-bottom:8px;">Event outline oranye</div>
+        <span class="badge badge-warning" style="margin-bottom:4px;">⏳ Pending</span>
+        <div style="font-size:11px;color:var(--text-muted);">Menunggu admin menyetujui jadwal</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+        <div style="background:#7367f0;border-radius:6px;padding:5px 8px;font-size:11.5px;font-weight:600;color:#fff;margin-bottom:8px;">Event warna solid</div>
+        <span class="badge badge-primary" style="margin-bottom:4px;">✓ Approved</span>
+        <div style="font-size:11px;color:var(--text-muted);">Jadwal sudah disetujui admin</div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+        <div style="background:#82868b33;border:1.5px solid #82868b;border-radius:6px;padding:5px 8px;font-size:11.5px;font-weight:600;color:#82868b;margin-bottom:8px;">Event abu-abu transparan</div>
+        <span class="badge badge-secondary" style="margin-bottom:4px;">✕ Rejected</span>
+        <div style="font-size:11px;color:var(--text-muted);">Jadwal ditolak admin</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section mt-16 no-break">
+    <div class="section-title">Warna Event di Kalender (berdasarkan status)</div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="background:#faf9ff;">
+            <th style="padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-muted);">TAMPILAN EVENT</th>
+            <th style="padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-muted);">STATUS</th>
+            <th style="padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-muted);">ARTINYA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f5f4f7;">
+            <td style="padding:8px 14px;"><div style="background:#ff9f4333;color:#ff9f43;border:1.5px solid #ff9f43;border-radius:5px;padding:4px 8px;font-size:11px;display:inline-block;">Budi — caption</div></td>
+            <td style="padding:8px 14px;"><span class="badge badge-warning">Pending</span></td>
+            <td style="padding:8px 14px;color:var(--text-muted);">Menunggu persetujuan admin</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f5f4f7;">
+            <td style="padding:8px 14px;"><div style="background:#7367f0;color:#fff;border-radius:5px;padding:4px 8px;font-size:11px;display:inline-block;">Budi — caption</div></td>
+            <td style="padding:8px 14px;"><span class="badge badge-primary">Not Yet</span></td>
+            <td style="padding:8px 14px;color:var(--text-muted);">Disetujui, belum entry stamp</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f5f4f7;">
+            <td style="padding:8px 14px;"><div style="background:#ff9f43;color:#fff;border-radius:5px;padding:4px 8px;font-size:11px;display:inline-block;">Budi — caption</div></td>
+            <td style="padding:8px 14px;"><span class="badge badge-warning">Ongoing</span></td>
+            <td style="padding:8px 14px;color:var(--text-muted);">Shift sedang berlangsung</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f5f4f7;">
+            <td style="padding:8px 14px;"><div style="background:#28c76f;color:#fff;border-radius:5px;padding:4px 8px;font-size:11px;display:inline-block;">Budi — caption</div></td>
+            <td style="padding:8px 14px;"><span class="badge badge-success">Done</span></td>
+            <td style="padding:8px 14px;color:var(--text-muted);">Shift selesai, hadir tepat waktu</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f5f4f7;">
+            <td style="padding:8px 14px;"><div style="background:#ea5455;color:#fff;border-radius:5px;padding:4px 8px;font-size:11px;display:inline-block;">Budi — caption</div></td>
+            <td style="padding:8px 14px;"><span class="badge badge-danger" style="background:#feeaea;color:var(--danger);">Late</span></td>
+            <td style="padding:8px 14px;color:var(--text-muted);">Selesai tapi terlambat masuk</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f5f4f7;">
+            <td style="padding:8px 14px;"><div style="background:#82868b;color:#fff;border-radius:5px;padding:4px 8px;font-size:11px;display:inline-block;">Budi — caption</div></td>
+            <td style="padding:8px 14px;"><span class="badge badge-secondary">Absence</span></td>
+            <td style="padding:8px 14px;color:var(--text-muted);">Tidak hadir</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 14px;"><div style="background:#7367f033;color:#7367f0;border:2px dashed #7367f0;border-radius:5px;padding:4px 8px;font-size:11px;display:inline-block;">Budi — caption 🔄</div></td>
+            <td style="padding:8px 14px;"><span class="badge badge-teal">Reschedule Pending</span></td>
+            <td style="padding:8px 14px;color:var(--text-muted);">Ada pengajuan reschedule yang menunggu review admin</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <hr class="hr-section">
+  <div style="text-align:center;font-size:11.5px;color:var(--text-muted);">
+    <div style="font-size:18px;margin-bottom:6px;">📋</div>
+    <strong style="color:var(--dark);">Log Mieru — Internship Monitoring App</strong><br>
+    Dokumen Panduan Intern Staff &nbsp;·&nbsp; Versi 1.0 &nbsp;·&nbsp; Maret 2026<br>
+    <span style="font-size:10.5px;">Untuk pertanyaan lebih lanjut, hubungi admin program magang kamu.</span>
+  </div>
+</div>
+
+</body>
+</html>
