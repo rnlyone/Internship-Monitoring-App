@@ -285,8 +285,8 @@ class ScheduleController extends Controller
             return response()->json(['message' => 'Schedule updated successfully.', 'schedule' => $schedule]);
         }
 
-        // ---- INTERN: cannot edit done/absence directly ----
-        if (in_array($schedule->status, ['done', 'absence'])) {
+        // ---- INTERN: cannot edit done/late/absence directly ----
+        if (in_array($schedule->status, ['done', 'late', 'absence'])) {
             return response()->json(['message' => 'Cannot modify a completed or absent schedule.'], 422);
         }
 

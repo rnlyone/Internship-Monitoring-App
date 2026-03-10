@@ -36,7 +36,7 @@ class AdminReportController extends Controller
                     'email'           => $intern->email,
                     'total_schedules' => $slots->count(),
                     'total_hours'     => round($slots->sum(fn($s) => $s->duration_hours), 2),
-                    'completed'       => $slots->where('status', 'done')->count(),
+                    'completed'       => $slots->whereIn('status', ['done', 'late'])->count(),
                     'late'            => $slots->where('status', 'late')->count(),
                     'absence'         => $slots->where('status', 'absence')->count(),
                     'logbook_entries' => $slots->sum(fn($s) => $s->shiftLogbooks->count()),
@@ -118,7 +118,7 @@ class AdminReportController extends Controller
         $summary = [
             'total_schedules'  => $slots->count(),
             'total_hours'      => round($totalMinutes / 60, 2),
-            'completed'        => $slots->where('status', 'done')->count(),
+            'completed'        => $slots->whereIn('status', ['done', 'late'])->count(),
             'late'             => $slots->whereIn('status', ['late'])->count(),
             'absence'          => $slots->where('status', 'absence')->count(),
             'ongoing'          => $slots->where('status', 'ongoing')->count(),
@@ -186,7 +186,7 @@ class AdminReportController extends Controller
         $summary = [
             'total_schedules'   => $slots->count(),
             'total_hours'       => round($totalMinutes / 60, 2),
-            'completed'         => $slots->where('status', 'done')->count(),
+            'completed'         => $slots->whereIn('status', ['done', 'late'])->count(),
             'late'              => $slots->where('status', 'late')->count(),
             'absence'           => $slots->where('status', 'absence')->count(),
             'ongoing'           => $slots->where('status', 'ongoing')->count(),

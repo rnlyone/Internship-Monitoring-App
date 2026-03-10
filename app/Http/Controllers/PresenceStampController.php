@@ -104,12 +104,11 @@ class PresenceStampController extends Controller
             'type'             => 'exit',
         ]);
 
-        // Mark as done if it was ongoing, keep late if it was late
+        // Mark as done if it was ongoing, keep late status if it was late
         if ($schedule->status === 'ongoing') {
             $schedule->update(['status' => 'done']);
-        } elseif ($schedule->status === 'late') {
-            $schedule->update(['status' => 'done']);
         }
+        // If status is 'late', intentionally leave it as 'late' so reports correctly count late shifts
 
         return response()->json([
             'message' => 'Stamped exit successfully.',

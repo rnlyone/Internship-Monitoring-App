@@ -44,7 +44,7 @@ class DashboardController extends Controller
             'used_hours'        => round($myTotalMinutes / 60, 2),
             'max_hours'         => $maxHours,
             'remaining_hours'   => round($maxHours - ($myTotalMinutes / 60), 2),
-            'completed'         => $mySchedules->whereIn('status', ['done'])->count(),
+            'completed'         => $mySchedules->whereIn('status', ['done', 'late'])->count(),
             'late'              => $mySchedules->where('status', 'late')->count(),
             'absence'           => $mySchedules->where('status', 'absence')->count(),
             'upcoming'          => $mySchedules->where('status', 'not_yet')->count(),
