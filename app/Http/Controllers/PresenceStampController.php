@@ -128,7 +128,8 @@ class PresenceStampController extends Controller
 
         $schedules = ScheduleSlot::with('entryStamp', 'exitStamp')
             ->where('user_id', $user->id)
-            ->where('status', 'not_yet')
+            ->whereIn('status', ['not_yet', 'late'])
+            ->whereDoesntHave('entryStamp')
             ->where('start_shift', '<=', $now->copy()->addMinutes(30))
             ->where('start_shift', '>=', $now->copy()->subMinutes(30))
             ->orderBy('start_shift')

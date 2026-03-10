@@ -72,9 +72,9 @@
                             <h6 class="alert-heading mb-1">Presence Rules</h6>
                             <ul class="mb-0 ps-3">
                                 <li>Entry button appears 30 minutes before schedule starts.</li>
-                                <li>Entry button disappears 15 minutes after start (reminder card hidden).</li>
-                                <li>After 15 minutes: status becomes <strong>Late</strong>.</li>
-                                <li>After 30 minutes: status becomes <strong>Absence</strong>.</li>
+                                <li>Entry button disappears 30 minutes after start (reminder card hidden).</li>
+                                <li>After 15 minutes: status becomes <strong>Late</strong> (entry still allowed).</li>
+                                <li>After 30 minutes: status becomes <strong>Absence</strong> and entry is blocked.</li>
                                 <li>Exit is prevented until the full shift duration is served (adjusted for late entry).</li>
                             </ul>
                         </div>
