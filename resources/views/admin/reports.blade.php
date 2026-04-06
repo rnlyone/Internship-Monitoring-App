@@ -33,7 +33,8 @@
 .apv-rejected   { background: rgba(130,134,139,.1); color: #82868b; }
 
 /* Export button pulse while loading */
-#rpExportBtn.loading { pointer-events:none; opacity:.65; }
+#rpExportBtn.loading,
+#rpCertificateBtn.loading { pointer-events:none; opacity:.65; }
 </style>
 @endpush
 
@@ -41,7 +42,7 @@
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-5">
     <div>
         <h4 class="mb-1"><i class="ti ti-report me-2"></i>Internship Reports</h4>
-        <p class="text-muted mb-0">Click an intern card to view their detailed report and export PDF.</p>
+        <p class="text-muted mb-0">Click an intern card to view their detailed report and export report/certificate PDF.</p>
     </div>
 </div>
 
@@ -137,6 +138,9 @@
                 </button>
                 <button class="btn btn-sm btn-success" id="rpExportBtn" title="Export comprehensive PDF report">
                     <i class="ti ti-file-type-pdf me-1"></i>Export PDF
+                </button>
+                <button class="btn btn-sm btn-outline-primary" id="rpCertificateBtn" title="Export internship certificate PDF">
+                    <i class="ti ti-certificate me-1"></i>Export Certificate
                 </button>
             </div>
         </div>
@@ -577,6 +581,34 @@
         setTimeout(() => {
             btn.classList.remove('loading');
             btn.innerHTML = '<i class="ti ti-file-type-pdf me-1"></i>Export PDF';
+        }, 2500);
+    });
+
+    // ── Certificate export ───────────────────────────────
+    document.getElementById('rpCertificateBtn').addEventListener('click', function () {
+        if (!_currentInternId) return;
+        const btn = this;
+        btn.classList.add('loading');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Generating…';
+
+        const params = new URLSearchParams();
+        const from = document.getElementById('rpDateFrom').value;
+        const to   = document.getElementById('rpDateTo').value;
+        if (from) params.set('date_from', from);
+        if (to)   params.set('date_to',   to);
+
+        const url = `{{ url('/admin/reports') }}/${_currentInternId}/certificate?${params}`;
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        setTimeout(() => {
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="ti ti-certificate me-1"></i>Export Certificate';
         }, 2500);
     });
 })();

@@ -183,6 +183,23 @@ class AdminReportController extends Controller
                 return $diff > 0 ? (int) $diff : 0;
             });
 
+        $attendanceRate = $slots->count() > 0
+            ? round(($slots->whereIn('status', ['done', 'late'])->count()) / $slots->count() * 100, 1)
+            : 0;
+
+        $kanbanAssigned = $kanbanCards->where('assigned_to', $intern->id)->count();
+        $kanbanDone = $kanbanCards->where('assigned_to', $intern->id)->whereIn('column_name', ['done', 'archive'])->count();
+
+        $taskScore = $kanbanAssigned > 0 ? ($kanbanDone / $kanbanAssigned) * 100 : 100;
+        $finalScoreTotal = ($attendanceRate * 0.6) + ($taskScore * 0.4);
+
+        if ($finalScoreTotal >= 90) $finalGrade = 'A';
+        elseif ($finalScoreTotal >= 85) $finalGrade = 'A-';
+        elseif ($finalScoreTotal >= 80) $finalGrade = 'B';
+        elseif ($finalScoreTotal >= 75) $finalGrade = 'B-';
+        elseif ($finalScoreTotal >= 70) $finalGrade = 'C';
+        else $finalGrade = 'C-';
+
         $summary = [
             'total_schedules'   => $slots->count(),
             'total_hours'       => round($totalMinutes / 60, 2),
@@ -196,11 +213,10 @@ class AdminReportController extends Controller
             'rejected'          => $slots->where('approval_status', 'rejected')->count(),
             'shift_logs'        => $slots->sum(fn($s) => $s->shiftLogbooks->count()),
             'total_late_min'    => $totalLateMin,
-            'attendance_rate'   => $slots->count() > 0
-                ? round(($slots->where('status', 'done')->count() + $slots->where('status', 'late')->count()) / $slots->count() * 100, 1)
-                : 0,
-            'kanban_assigned'   => $kanbanCards->where('assigned_to', $intern->id)->count(),
-            'kanban_done'       => $kanbanCards->where('assigned_to', $intern->id)->where('column_name', 'done')->count(),
+            'attendance_rate'   => $attendanceRate,
+            'kanban_assigned'   => $kanbanAssigned,
+            'kanban_done'       => $kanbanDone,
+            'final_grade'       => $finalGrade,
             'date_from'         => $request->date_from ?? $slots->first()?->start_shift?->format('d M Y') ?? '—',
             'date_to'           => $request->date_to   ?? $slots->last()?->start_shift?->format('d M Y')  ?? '—',
             'internship_start'  => $slots->sortBy('start_shift')->first()?->start_shift?->format('d M Y') ?? '—',
@@ -268,6 +284,54 @@ class AdminReportController extends Controller
         ])->setPaper('A4', 'portrait');
 
         $filename = 'internship-report-' . str($intern->name)->slug() . '-' . now()->format('Ymd') . '.pdf';
+
+        return $pdf->download($filename);
+    }
+
+    /**
+     * Export internship certificate PDF for one intern.
+     * GET /admin/reports/{intern}/certificate?date_from=&date_to=
+     */
+    public function exportCertificate(Request $request, User $intern)
+    {
+        if ($intern->isAdmin()) {
+            abort(422, 'Not an intern.');
+        }
+
+        $query = ScheduleSlot::query()
+            ->where('user_id', $intern->id)
+            ->where('approval_status', '!=', 'rejected')
+            ->orderBy('start_shift');
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('start_shift', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('start_shift', '<=', $request->date_to);
+        }
+
+        $slots = $query->get();
+
+        $periodStart = $slots->first()?->start_shift;
+        $periodEnd = $slots->last()?->start_shift;
+
+        $certificatePeriod = [
+            'from' => $request->filled('date_from')
+                ? Carbon::parse($request->date_from)->format('d F Y')
+                : ($periodStart ? $periodStart->format('d F Y') : '—'),
+            'to' => $request->filled('date_to')
+                ? Carbon::parse($request->date_to)->format('d F Y')
+                : ($periodEnd ? $periodEnd->format('d F Y') : '—'),
+        ];
+
+        $pdf = Pdf::loadView('admin.certificate-pdf', [
+            'intern' => $intern,
+            'period' => $certificatePeriod,
+            'issuedDate' => '6 April 2026',
+            'issuedPlace' => 'Makassar',
+        ])->setPaper('A4', 'portrait');
+
+        $filename = 'internship-certificate-' . str($intern->name)->slug() . '-' . now()->format('Ymd') . '.pdf';
 
         return $pdf->download($filename);
     }

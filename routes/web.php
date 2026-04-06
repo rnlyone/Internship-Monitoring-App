@@ -97,6 +97,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/reports', [AdminReportController::class, 'index'])->name('admin.reports.index');
         Route::get('/admin/reports/{intern}', [AdminReportController::class, 'show'])->name('admin.reports.show');
         Route::get('/admin/reports/{intern}/pdf', [AdminReportController::class, 'exportPdf'])->name('admin.reports.pdf');
+        Route::get('/admin/reports/{intern}/certificate', [AdminReportController::class, 'exportCertificate'])->name('admin.reports.certificate');
 
         // User management
         Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
